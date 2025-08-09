@@ -28,9 +28,15 @@ Before starting, ensure you have:
 ### Step 1: Launch an EC2 Instance
 - Log into the AWS Management Console to setup the EC2 Instance.
 ---
-![EC2-Dashboard](images/a.png)
+![EC2-Dashboard](./images/a.PNG)
 ---
-- Search for **EC2  on the search**.
+- Search for **EC2  on the search bar**.
+---
+![EC2 Search](./images/1a.PNG)
+---
+- Click on Launch Instance.
+---
+![EC2 Search](./images/1.PNG)
 ---
 - Choose **Ubuntu Server 22.04 LTS** (or latest version).
 - Select an **instance type** (e.g., t2.micro for free tier).
