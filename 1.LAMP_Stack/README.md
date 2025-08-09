@@ -39,6 +39,7 @@ Before starting, ensure you have:
 ![EC2 Search](./images/1.PNG)
 ---
 - Choose **Ubuntu Server 22.04 LTS** (or latest version).
+
 - Select an **instance type** (e.g., t2.micro for free tier).
 - Configure **Security Group** to allow HTTP, HTTPS, SSH.
 - Launch and download the `.pem` key pair.
