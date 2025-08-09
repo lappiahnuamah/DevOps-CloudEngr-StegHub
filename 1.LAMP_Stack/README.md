@@ -18,17 +18,18 @@ Before starting, ensure you have:
 3. A **key pair** for SSH access.
 4. AWS **security group rules** allowing:
    - HTTP (Port 80)
-   - HTTPS (Port 443)
    - SSH (Port 22)
-5. A local terminal (Linux/Mac) or **PuTTY** (Windows).
+5. A local terminal (Linux/Mac/git bash) or **PuTTY** (Windows).
 
 ---
 
 ## 2. Step-by-Step Implementation
 
 ### Step 1: Launch an EC2 Instance
-- Log into the AWS Management Console.
-- Go to **EC2 Dashboard → Launch Instance**.
+- Log into the AWS Management Console to setup the EC2 Instance.
+---
+- Search for **EC2  on the search**.
+---
 - Choose **Ubuntu Server 22.04 LTS** (or latest version).
 - Select an **instance type** (e.g., t2.micro for free tier).
 - Configure **Security Group** to allow HTTP, HTTPS, SSH.
