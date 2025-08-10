@@ -353,7 +353,7 @@ If you no longer need the setup:
 ---
 
 ## 5. Architecture Diagram
-![LAMP AWS Architecture](lamp_architecture_complete.png)
+![LAMP AWS Architecture](lamp_stack_architecture.png)
 
 ---
 **End of Guide**
