@@ -60,7 +60,7 @@ Before starting, ensure you have:
 ---
 - Configure the storage to what you prefer but we will leave everything default.
 ---
-![configure-storage](./images/1h.PNG)
+![configure-storage](./images/1j.PNG)
 ---
 - Scroll down and at your right, click on Launch Instance.
 ---
@@ -70,7 +70,7 @@ Before starting, ensure you have:
 ---
 ![ec2-success](./images/1l.PNG)
 ---
-- Make sure the status checks are all checked ensuring that our instance has been launched
+- Make sure the status checks are all checked ensuring that our instance has been launched and running
 ---
 ![ec2-success](./images/2d.PNG)
 ---
@@ -79,7 +79,7 @@ Before starting, ensure you have:
 ![ec2-success](./images/2.PNG)
 ---
 ### Step 2: Connect to Your Instance
-From your terminal:
+From your terminal, cd Downloads/:
 ```bash
 chmod 400 lamp-stack-kp.pem
 ssh -i lamp-stack-kp.pem ubuntu@<EC2_PUBLIC_IP>
@@ -103,8 +103,25 @@ Enable and start Apache:
 sudo systemctl enable apache2
 sudo systemctl start apache2
 ```
+---
+Check the status of Apache. If it's green, it means you did everything well
+```bash
+sudo systemctl status apache2
+```
+You should see this if everything is well
+---
+![apache-success](./images/2g.PNG)
+---
 Test: Visit `http://<EC2_PUBLIC_IP>` in your browser.
-
+---
+Test: You can also test in your terminal with these commands
+```bash
+curl http://localhost:80 
+```
+or
+```bash
+curl http://127.0.0.1:80
+```
 ---
 
 ### Step 5: Install MySQL/MariaDB
