@@ -78,17 +78,21 @@ Before starting, ensure you have:
 ---
 ![ec2-success](./images/2.PNG)
 ---
+- Another way to retrieve your IP Address is to use this command
+```bash
+ TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/meta-data/public-ipv4
+```
 ### Step 2: Connect to Your Instance
 From your terminal, cd Downloads/:
 ```bash
 chmod 400 lamp-stack-kp.pem
 ssh -i lamp-stack-kp.pem ubuntu@<EC2_PUBLIC_IP>
 ```
-Type `yes` 
+- Type `yes` 
 ---
 ![ec2-success](./images/2b.PNG)
 ---
-You're in when you see this
+- You're in when you see this
 ---
 ![ssh-success](./images/2c.PNG)
 ---
@@ -134,18 +138,39 @@ curl http://127.0.0.1:80
 ![apache-webpage](./images/2gg.PNG)
 ---
 
-### Step 5: Install MySQL
+### Step 5: Installing MySQL
 ```bash
 sudo apt install mysql-server -y
-```
-Secure installation:
-```bash
-sudo mysql_secure_installation
 ```
 Verify MySQL:
 ```bash
 sudo systemctl status mysql
 ```
+Log into mysql by typing this command
+```bash
+sudo mysql
+```
+You will see this:
+---
+![mysql](./images/3a.PNG)
+---
+Set a password for root user using mysql_native_password as default authentication method:
+```bash
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'PassWord.1'; 
+```
+Exit the MySQL shell with:
+```bash
+exit
+```
+Start the interactive script:
+```bash
+sudo mysql_secure_installation
+```
+This will ask if you want to configure the `VALIDATE PASSWORD PLUGIN`, type y. If you answer y, you'll be asked to select a level of password validation :
+---
+![mysql](./images/3b.PNG)
+---
+
 
 ---
 
