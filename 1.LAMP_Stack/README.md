@@ -78,17 +78,21 @@ Before starting, ensure you have:
 ---
 ![ec2-success](./images/2.PNG)
 ---
+- Another way to retrieve your IP Address is to use this command
+```bash
+ TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/meta-data/public-ipv4
+```
 ### Step 2: Connect to Your Instance
 From your terminal, cd Downloads/:
 ```bash
 chmod 400 lamp-stack-kp.pem
 ssh -i lamp-stack-kp.pem ubuntu@<EC2_PUBLIC_IP>
 ```
-Type `yes` 
+- Type `yes` 
 ---
 ![ec2-success](./images/2b.PNG)
 ---
-You're in when you see this
+- You're in when you see this
 ---
 ![ssh-success](./images/2c.PNG)
 ---
@@ -134,18 +138,53 @@ curl http://127.0.0.1:80
 ![apache-webpage](./images/2gg.PNG)
 ---
 
-### Step 5: Install MySQL
+### Step 5: Installing MySQL
 ```bash
 sudo apt install mysql-server -y
-```
-Secure installation:
-```bash
-sudo mysql_secure_installation
 ```
 Verify MySQL:
 ```bash
 sudo systemctl status mysql
 ```
+---
+![mysql-status](./images/4a.PNG)
+---
+Log into mysql by typing this command
+```bash
+sudo mysql
+```
+- You will see this:
+---
+![mysql](./images/3a.PNG)
+---
+Set a password for root user using mysql_native_password as default authentication method:
+```bash
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'PassWord.1'; 
+```
+Exit the MySQL shell with:
+```bash
+exit
+```
+Start the interactive script:
+```bash
+sudo mysql_secure_installation
+```
+- This will ask if you want to configure the `VALIDATE PASSWORD PLUGIN`, type y. If you answer y, you'll be asked to select a level of password validation :
+---
+![mysql](./images/3b.PNG)
+---
+![mysql-validate-password](./images/4.PNG)
+---
+Test if you're able to log in by typing:
+```bash
+sudo mysql -p
+```
+NB: -p flag will prompt you for the password used after changing the root user password.
+To exit the MySQL console, type:
+```bash
+exit
+```
+
 
 ---
 
@@ -157,49 +196,107 @@ Check PHP version:
 ```bash
 php -v
 ```
-
+![mysql](./images/4b.PNG)
 ---
 
-### Step 7: Test PHP Processing
-Create a test file:
+### Step 7: Creating a Virtual Host for your website using Apache
+Create a directory for your website using `mkdir`. In our case:
 ```bash
-echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/info.php
+sudo mkdir /var/www/projectlamp
+```
+Assign ownership of directory to `$USER` environment variable, references your current system user:
+```bash
+sudo chown -R $USER:$USER /var/www/projectlamp
+```
+Create and open a new configuration file in Apache's `sites-available` directory using either vim or nano :
+```bash
+sudo vi /etc/apache2/site-available/projectlamp.conf
+```
+Press i and paste the following into the blank file:
+```apache
+<VirtualHost *:80>
+        ServerName projectlamp
+        ServerAlias www.projectlamp
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/projectlamp
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+To save and close the file completely:
+- Hit the `esc` button on the keyboard
+- Type :
+- Type `wq` . w for write and q for quite
+- Hit `ENTER` to save the file
+---
+- NB: using `/var/www/projectlamp` tells Apache to serve projectlamp using that as its web root directory. 
+---
+To enable the new virtual host, you can use this command:
+```bash
+sudo a2ensite <ServerName>
+```
+To dissable the default website that comes with Apache, use:
+```bash
+sudo a2dissite 000-default
+```
+To make sure your configuration file doesn't contain syntax errors, run:
+```bash
+sudo apache2ctl configtest
+```
+Reload Apache so these changes take effect:
+```bash
+sudo systemctl reload apache2
+```
+---
+- NB: You can comment out anything in the configurate file with `#` at the beginning of each option's lines. 
+---
+
+### Step 8: Test PHP Processing
+Create a test file for your empty web root:
+```bash
+sudo echo 'Hello LAMP from hostname ' $(TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/metadata/public-hostname) 'with public IP' $(TOKEN='curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/metadata/public-ipv4) > /var/www/projectlamp/index.html
+
 ```
 Visit:
 ```
-http://<EC2_PUBLIC_IP>/info.php
+http://<EC2_PUBLIC_IP>:80
 ```
-If PHP info page appears, PHP is working.
-
+- If you see the text from `echo` command you wrote to the index.html, then it means your Apache Virtual host is working. 
+- NB: That index.html will always take precedence over other files with the default DirectoryIndex settings on Apache.
 ---
 
-### Step 8: Configure a Virtual Host (Optional but Recommended)
+### Step 9: Enable PHP on the website
+If you want to change the behavior of DirectoryIndex
 ```bash
-sudo mkdir /var/www/mywebsite
-sudo chown -R $USER:$USER /var/www/mywebsite
-sudo nano /etc/apache2/sites-available/mywebsite.conf
+sudo vim /etc/apache2/mods-enabled/dir.conf
 ```
-Add:
+Change:
 ```apache
-<VirtualHost *:80>
-    ServerAdmin admin@mywebsite.com
-    ServerName mywebsite.com
-    ServerAlias www.mywebsite.com
-    DocumentRoot /var/www/mywebsite
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
+DirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm
 ```
-Enable site:
+To:
+```apache
+DirectoryIndex index.php index.html index.cgi index.pi index.xhtml index.htm
+```
+Save and close the file. Reload Apache with this command:
 ```bash
-sudo a2ensite mywebsite.conf
-sudo a2dissite 000-default.conf
 sudo systemctl reload apache2
 ```
-
+##### Create a new file called `index.php` inside the web root:
+```bash
+vim /var/www/projectlamp/index.php
+```
+Add this to the blank file:
+```php
+<?php
+phpinfo();
+?>
+```
+- You should see this:
+![mysql](./images/4e.PNG)
 ---
 
-### Step 9: Firewall Configuration (If Using UFW)
+### Step 10: Firewall Configuration (If Using UFW)
 ```bash
 sudo ufw allow OpenSSH
 sudo ufw allow 'Apache Full'
@@ -211,7 +308,7 @@ sudo ufw enable
 ### Step 10: Testing MySQL with PHP
 Create a PHP file:
 ```bash
-sudo nano /var/www/html/db_test.php
+sudo nano /var/www/projectlamp/db_test.php
 ```
 Example code:
 ```php
