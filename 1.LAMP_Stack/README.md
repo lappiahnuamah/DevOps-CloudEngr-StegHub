@@ -52,17 +52,37 @@ Before starting, ensure you have:
 ---
 ![Instance-Type](./images/1h.PNG)
 ---
-- Launch and download the `.pem` key pair.
+- Launch and download the `.pem` key pair or use an already created key pair.
 ---
 ![key pair](./images/1f.PNG)
 ---
 ![key pair 2](./images/1g.PNG)
 ---
+- Configure the storage to what you prefer but we will leave everything default.
+---
+![configure-storage](./images/1h.PNG)
+---
+- Scroll down and at your right, click on Launch Instance.
+---
+![launch-instance](./images/1k.PNG)
+---
+- You should see this if everything is successful
+---
+![ec2-success](./images/1l.PNG)
+---
+- Make sure the status checks are all checked ensuring that our instance has been launched
+---
+![ec2-success](./images/2d.PNG)
+---
+- Now, copy the public IP Address of your instance
+---
+![ec2-success](./images/2.PNG)
+---
 ### Step 2: Connect to Your Instance
 From your terminal:
 ```bash
-chmod 400 my-key.pem
-ssh -i my-key.pem ubuntu@<EC2_PUBLIC_IP>
+chmod 400 lamp-stack-kp.pem
+ssh -i lamp-stack-kp.pem ubuntu@<EC2_PUBLIC_IP>
 ```
 
 ---
