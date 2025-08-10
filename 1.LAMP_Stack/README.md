@@ -229,7 +229,7 @@ To save and close the file completely:
 - Type `wq` . w for write and q for quite
 - Hit `ENTER` to save the file
 ---
-NB: using `/var/www/projectlamp` tells Apache to serve projectlamp using that as its web root directory. 
+- NB: using `/var/www/projectlamp` tells Apache to serve projectlamp using that as its web root directory. 
 ---
 To enable the new virtual host, you can use this command:
 ```bash
@@ -248,7 +248,7 @@ Reload Apache so these changes take effect:
 sudo systemctl reload apache2
 ```
 ---
-**** NB: You can comment out anything in the configurate file with `#` at the beginning of each option's lines. 
+- NB: You can comment out anything in the configurate file with `#` at the beginning of each option's lines. 
 ---
 
 ### Step 8: Test PHP Processing
@@ -261,8 +261,8 @@ Visit:
 ```
 http://<EC2_PUBLIC_IP>:80
 ```
-If you see the text from `echo` command you wrote to the index.html, then it means your Apache Virtual host is working. 
-NB: That index.html will always take precedence over other files with the default DirectoryIndex settings on Apache.
+- If you see the text from `echo` command you wrote to the index.html, then it means your Apache Virtual host is working. 
+- NB: That index.html will always take precedence over other files with the default DirectoryIndex settings on Apache.
 ---
 
 ### Step 9: Enable PHP on the website
