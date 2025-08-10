@@ -84,7 +84,13 @@ From your terminal, cd Downloads/:
 chmod 400 lamp-stack-kp.pem
 ssh -i lamp-stack-kp.pem ubuntu@<EC2_PUBLIC_IP>
 ```
-
+Type `yes` 
+---
+![ec2-success](./images/2b.PNG)
+---
+You're in when you see this
+---
+![ssh-success](./images/2c.PNG)
 ---
 
 ### Step 3: Update the System
@@ -108,13 +114,15 @@ Check the status of Apache. If it's green, it means you did everything well
 ```bash
 sudo systemctl status apache2
 ```
-You should see this if everything is well
+- You should see this if everything is well
 ---
 ![apache-success](./images/2g.PNG)
 ---
-Test: Visit `http://<EC2_PUBLIC_IP>` in your browser.
+- Test: Visit `http://<EC2_PUBLIC_IP>` in your browser.
 ---
-Test: You can also test in your terminal with these commands
+![apache-webpage](./images/2oo.PNG)
+---
+- Test: You can also test in your terminal with these commands
 ```bash
 curl http://localhost:80 
 ```
@@ -123,8 +131,10 @@ or
 curl http://127.0.0.1:80
 ```
 ---
+![apache-webpage](./images/2gg.PNG)
+---
 
-### Step 5: Install MySQL/MariaDB
+### Step 5: Install MySQL
 ```bash
 sudo apt install mysql-server -y
 ```
