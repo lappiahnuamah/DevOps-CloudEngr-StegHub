@@ -49,10 +49,15 @@ Before starting, ensure you have:
 ---
 ![Instance-Type](./images/1e.PNG)
 - Configure **Security Group** to allow HTTP, HTTPS, SSH.
-- Launch and download the `.pem` key pair.
-
 ---
-
+![Instance-Type](./images/1h.PNG)
+---
+- Launch and download the `.pem` key pair.
+---
+![key pair](./images/1f.PNG)
+---
+![key pair 2](./images/1g.PNG)
+---
 ### Step 2: Connect to Your Instance
 From your terminal:
 ```bash
