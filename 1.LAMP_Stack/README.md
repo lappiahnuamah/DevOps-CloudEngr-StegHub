@@ -275,7 +275,7 @@ Change:
 DirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm
 ```
 To:
-```bash
+```apache
 DirectoryIndex index.php index.html index.cgi index.pi index.xhtml index.htm
 ```
 Save and close the file. Reload Apache with this command:
