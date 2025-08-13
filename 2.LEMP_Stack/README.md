@@ -1,13 +1,13 @@
-# LAMP Stack Implementation on AWS
+# LEMP Stack Implementation on AWS
 
 ## Overview
-The **LAMP stack** is a web service solution stack consisting of:
+The **LEMP stack** is a web service solution stack consisting of:
 - **L**inux – Operating system
-- **A**pache – Web server
+- **E(N)**ginx – Web server
 - **M**ySQL/MariaDB – Database
 - **P**HP – Scripting language
 
-We will deploy the LAMP stack on an Amazon EC2 instance running Ubuntu.
+We will deploy the LEMP stack on an Amazon EC2 instance running Ubuntu.
 
 ---
 
@@ -28,7 +28,7 @@ Before starting, ensure you have:
 ### Step 1: Launch an EC2 Instance
 - Log into the AWS Management Console to setup the EC2 Instance.
 ---
-![EC2-Dashboard](./images/a.PNG)
+![EC2-Dashboard](../1.LAMP_Stack/images/a.PNG)
 ---
 - Search for **EC2  on the search bar**.
 ---
