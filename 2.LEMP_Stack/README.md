@@ -82,6 +82,11 @@ Before starting, ensure you have:
 ```bash
  TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/meta-data/public-ipv4
 ```
+- OR by this
+```bash
+ curl -s http://169.254.169.254/latest/meta-data/public-ipv4
+```
+---
 ### Step 2: Connect to Your Instance
 From your terminal, cd Downloads/:
 ```bash
@@ -130,7 +135,7 @@ or
 curl http://127.0.0.1:80
 ```
 ---
-![apache-webpage](./images/2gg.PNG)
+![apache-webpage](../1.LAMP_Stack/images/2gg.PNG)
 ---
 
 ### Step 5: Installing MySQL
@@ -142,7 +147,7 @@ Verify MySQL:
 sudo systemctl status mysql
 ```
 ---
-![mysql-status](./images/4a.PNG)
+![mysql-status](../1.LAMP_Stack/images/4a.PNG)
 ---
 Log into mysql by typing this command
 ```bash
@@ -150,7 +155,7 @@ sudo mysql
 ```
 - You will see this:
 ---
-![mysql](./images/3a.PNG)
+![mysql](../1.LAMP_Stack/images/3a.PNG)
 ---
 Set a password for root user using mysql_native_password as default authentication method:
 ```bash
@@ -166,9 +171,9 @@ sudo mysql_secure_installation
 ```
 - This will ask if you want to configure the `VALIDATE PASSWORD PLUGIN`, type y. If you answer y, you'll be asked to select a level of password validation :
 ---
-![mysql](./images/3b.PNG)
+![mysql](../1.LAMP_Stack/images/3b.PNG)
 ---
-![mysql-validate-password](./images/4.PNG)
+![mysql-validate-password](../1.LAMP_Stack/images/4.PNG)
 ---
 Test if you're able to log in by typing:
 ```bash
@@ -180,51 +185,70 @@ To exit the MySQL console, type:
 exit
 ```
 
-
 ---
 
 ### Step 6: Install PHP
 ```bash
-sudo apt install php libapache2-mod-php php-mysql -y
+sudo apt install php-fpm php-mysql
 ```
+---
+- NB: php-fpm stands for "PHP fastCGI process manager". It tells Nginx to pass PHP requests to this software.
+- php-mysql, php module that allows PHP to communicate with MySQL-based databases.
+---
 Check PHP version:
 ```bash
 php -v
 ```
-![mysql](./images/4b.PNG)
+![mysql](../1.LAMP_Stack/images/4b.PNG)
 ---
 
-### Step 7: Creating a Virtual Host for your website using Apache
+### Step 7: Configuring Nginx to Use PHP Processor
 Create a directory for your website using `mkdir`. In our case:
 ```bash
-sudo mkdir /var/www/projectlamp
+sudo mkdir /var/www/projectLEMP
 ```
 Assign ownership of directory to `$USER` environment variable, references your current system user:
 ```bash
-sudo chown -R $USER:$USER /var/www/projectlamp
+sudo chown -R $USER:$USER /var/www/projectLEMP
 ```
-Create and open a new configuration file in Apache's `sites-available` directory using either vim or nano :
+Create and open a new configuration file in Nginx's `sites-available` directory using either vim or nano :
 ```bash
-sudo vi /etc/apache2/site-available/projectlamp.conf
+sudo nano /etc/nginx/sites-available/projectLEMP
 ```
-Press i and paste the following into the blank file:
-```apache
-<VirtualHost *:80>
-        ServerName projectlamp
-        ServerAlias www.projectlamp
-        ServerAdmin webmaster@localhost
-        DocumentRoot /var/www/projectlamp
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
+Paste the following into the blank file:
+```nginx
+#/etc/nginx/sites-available/projectLEMP
+
+server {
+   listen 80;
+   server_name projectLEMP www.projectLEMP;
+   root /var/www/projectLEMP
+
+   index index.html index.htm index.php;
+
+   location / {
+      try_files $uri $uri/ =404;
+   }
+
+   location ~ \.php$ {
+      include snippets/fastcgi-php.conf;
+      fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+   }
+
+   location ~ /\.ht {
+      deny all;
+   }
+
+}
 ```
 To save and close the file completely:
-- Hit the `esc` button on the keyboard
+- Hit the `ctrl + o` and Enter. That will save
 - Type :
-- Type `wq` . w for write and q for quite
-- Hit `ENTER` to save the file
+- Type `ctrl + x` to close the file
 ---
-- NB: using `/var/www/projectlamp` tells Apache to serve projectlamp using that as its web root directory. 
+- NB: using `/var/www/projectLEMP` tells Nginx to serve projectLEMP using that as its web root directory.
+- listen - Defines what port Nginx should listen on. In our case, port 80, default port of HTTP.
+- server_name - defines which ip address or domain names the server should respond to.
 ---
 To enable the new virtual host, you can use this command:
 ```bash
