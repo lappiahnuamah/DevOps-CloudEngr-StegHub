@@ -32,51 +32,51 @@ Before starting, ensure you have:
 ---
 - Search for **EC2  on the search bar**.
 ---
-![EC2 Search](./images/1a.PNG)
+![EC2 Search](../1.LAMP_Stack/images/1a.PNG)
 ---
 - Click on Launch Instance.
 ---
-![EC2 Search](./images/1.PNG)
+![EC2 Search](../1.LAMP_Stack/images/1.PNG)
 ---
 - Enter the name of your web server
 ---
-![EC2 Name](./images/1b.PNG)
+![EC2 Name](../1.LAMP_Stack/images/1b.PNG)
 ---
 - Choose **Ubuntu Server 22.04 LTS** (or latest version).
 ---
-![Ubuntu](./images/1c.PNG)
+![Ubuntu](../1.LAMP_Stack/images/1c.PNG)
 - Select an **instance type** (e.g., t2.micro for free tier).
 ---
-![Instance-Type](./images/1e.PNG)
+![Instance-Type](../1.LAMP_Stack/images/1e.PNG)
 - Configure **Security Group** to allow HTTP, HTTPS, SSH.
 ---
-![Instance-Type](./images/1h.PNG)
+![Instance-Type](../1.LAMP_Stack/images/1h.PNG)
 ---
 - Launch and download the `.pem` key pair or use an already created key pair.
 ---
-![key pair](./images/1f.PNG)
+![key pair](../1.LAMP_Stack/images/1f.PNG)
 ---
-![key pair 2](./images/1g.PNG)
+![key pair 2](../1.LAMP_Stack/images/1g.PNG)
 ---
 - Configure the storage to what you prefer but we will leave everything default.
 ---
-![configure-storage](./images/1j.PNG)
+![configure-storage](../1.LAMP_Stack/images/1j.PNG)
 ---
 - Scroll down and at your right, click on Launch Instance.
 ---
-![launch-instance](./images/1k.PNG)
+![launch-instance](../1.LAMP_Stack/images/1k.PNG)
 ---
 - You should see this if everything is successful
 ---
-![ec2-success](./images/1l.PNG)
+![ec2-success](../1.LAMP_Stack/images/1l.PNG)
 ---
 - Make sure the status checks are all checked ensuring that our instance has been launched and running
 ---
-![ec2-success](./images/2d.PNG)
+![ec2-success](../1.LAMP_Stack/images/2d.PNG)
 ---
 - Now, copy the public IP Address of your instance
 ---
-![ec2-success](./images/2.PNG)
+![ec2-success](../1.LAMP_Stack/images/2.PNG)
 ---
 - Another way to retrieve your IP Address is to use this command
 ```bash
@@ -90,11 +90,11 @@ ssh -i lamp-stack-kp.pem ubuntu@<EC2_PUBLIC_IP>
 ```
 - Type `yes` 
 ---
-![ec2-success](./images/2b.PNG)
+![ec2-success](../1.LAMP_Stack/images/2b.PNG)
 ---
 - You're in when you see this
 ---
-![ssh-success](./images/2c.PNG)
+![ssh-success](../1.LAMP_Stack/images/2c.PNG)
 ---
 
 ### Step 3: Update the System
@@ -104,9 +104,9 @@ sudo apt update && sudo apt upgrade -y
 
 ---
 
-### Step 4: Install Apache Web Server
+### Step 4: Install Nginx Web Server
 ```bash
-sudo apt install apache2 -y
+sudo apt install nginx -y
 ```
 Enable and start Apache:
 ```bash
