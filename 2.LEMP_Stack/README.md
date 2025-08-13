@@ -108,23 +108,18 @@ sudo apt update && sudo apt upgrade -y
 ```bash
 sudo apt install nginx -y
 ```
-Enable and start Apache:
-```bash
-sudo systemctl enable apache2
-sudo systemctl start apache2
-```
 ---
-Check the status of Apache. If it's green, it means you did everything well
+Check the status of Nginx. If it's green, it means you did everything well
 ```bash
-sudo systemctl status apache2
+sudo systemctl status nginx
 ```
 - You should see this if everything is well
 ---
-![apache-success](./images/2g.PNG)
+![nginx-success](./images/2.PNG)
 ---
 - Test: Visit `http://<EC2_PUBLIC_IP>` in your browser.
 ---
-![apache-webpage](./images/2oo.PNG)
+![nginx-webpage](./images/1.PNG)
 ---
 - Test: You can also test in your terminal with these commands
 ```bash
