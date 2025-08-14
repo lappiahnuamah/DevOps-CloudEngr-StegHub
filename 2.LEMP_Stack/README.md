@@ -294,7 +294,7 @@ http://<EC2_PUBLIC_IP>:80
 - If you see the text from `echo` command you wrote to the index.html, then it means your Nginx is working. 
 - NB: That index.html will always take precedence over other files with the default settings on Nginx.
 ---
-You will see this:
+- You will see this:
 ---
 ![echo-cmd](./images/4.PNG)
 ---
