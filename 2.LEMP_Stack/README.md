@@ -1,5 +1,8 @@
 # LEMP Stack Implementation on AWS
-
+---
+## Diagram
+![LEMP AWS_Architecture](dia.png)
+---
 ## Overview
 The **LEMP stack** is a web service solution stack consisting of:
 - **L**inux – Operating system
@@ -437,11 +440,6 @@ http://<Public_domain_or_IP>/todo_list.php
 If you no longer need the setup:
 - Terminate the EC2 instance from AWS Console.
 - Delete associated security groups and key pairs.
-
----
-
-## 5. Architecture Diagram
-![LAMP AWS Architecture](lemp_architecture_complete.png)
 
 ---
 **End of Guide**
