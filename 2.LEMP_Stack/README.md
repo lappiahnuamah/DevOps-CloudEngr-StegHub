@@ -436,7 +436,7 @@ http://<Public_domain_or_IP>/todo_list.php
 ![todo-list](./images/1d.PNG)
 ---
 
-## 4. Cleanup
+## Cleanup
 If you no longer need the setup:
 - Terminate the EC2 instance from AWS Console.
 - Delete associated security groups and key pairs.
