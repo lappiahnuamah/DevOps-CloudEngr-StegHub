@@ -385,7 +385,7 @@ To confirm that data is successfully saved into the table:
 ```sql
 SELECT * FROM student.todo_list;
 ```
-You should see something like this :
+- You should see something like this :
 ---
 ![db-table](./images/1c.PNG)
 ---
@@ -421,14 +421,14 @@ try {
 }
 ?>
 ```
-Save and close the file when done
+- Save and close the file when done
 ---
-Access this page in your web browser by visiting this:
+- Access this page in your web browser by visiting this:
 ---
 ```bash
 http://<Public_domain_or_IP>/todo_list.php
 ```
-You should see a page like this:
+- You should see a page like this:
 ---
 ![todo-list](./images/1d.PNG)
 ---
