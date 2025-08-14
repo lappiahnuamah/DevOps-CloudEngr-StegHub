@@ -242,8 +242,7 @@ server {
 }
 ```
 To save and close the file completely:
-- Hit the `ctrl + o` and Enter. That will save
-- Type :
+- Hit the `ctrl + o` and Enter. That will save the file
 - Type `ctrl + x` to close the file
 ---
 - NB: using `/var/www/projectLEMP` tells Nginx to serve projectLEMP using that as its web root directory.
@@ -294,6 +293,10 @@ http://<EC2_PUBLIC_IP>:80
 ```
 - If you see the text from `echo` command you wrote to the index.html, then it means your Nginx is working. 
 - NB: That index.html will always take precedence over other files with the default settings on Nginx.
+---
+You will see this:
+---
+![echo-cmd](./images/4.PNG)
 ---
 
 ### Step 9: Testing PHP with Nginx
