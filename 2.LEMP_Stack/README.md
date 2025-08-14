@@ -1,7 +1,7 @@
 # LEMP Stack Implementation on AWS
 ---
 ## Diagram
-![LEMP AWS_Architecture](dia.png)
+![LEMP AWS_Architecture](dia.PNG)
 ---
 ## Overview
 The **LEMP stack** is a web service solution stack consisting of:
