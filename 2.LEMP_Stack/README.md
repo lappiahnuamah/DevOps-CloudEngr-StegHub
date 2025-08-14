@@ -135,7 +135,7 @@ or
 curl http://127.0.0.1:80
 ```
 ---
-![apache-webpage](../1.LAMP_Stack/images/2gg.PNG)
+![nginx-webpage](./images/1f.PNG)
 ---
 
 ### Step 5: Installing MySQL
@@ -250,21 +250,28 @@ To save and close the file completely:
 - listen - Defines what port Nginx should listen on. In our case, port 80, default port of HTTP.
 - server_name - defines which ip address or domain names the server should respond to.
 ---
-To enable the new virtual host, you can use this command:
+Activate your configuration by linking to the config file from Nginx's `sites-enabled` directory:
 ```bash
-sudo a2ensite <ServerName>
+sudo ln -s /etc/nginx/sites-available/projectLEMP /etc/nginx/sites-enabled
 ```
-To dissable the default website that comes with Apache, use:
+---
+- NB: The above will tell Nginx to use the configuration when reloaded. 
+---
+Test your configuration:
 ```bash
-sudo a2dissite 000-default
+sudo nginx -t
 ```
-To make sure your configuration file doesn't contain syntax errors, run:
+- It should look like this if everything is OK, if any errors check the config again:
+---
+![nginx-test](./images/2e.PNG)
+---
+Disable default Nginx host that is currently configured to listen on port 80:
 ```bash
-sudo apache2ctl configtest
+sudo unlink /etc/nginx/sites-enabled/default
 ```
-Reload Apache so these changes take effect:
+Reload Nginx to apply the changes:
 ```bash
-sudo systemctl reload apache2
+sudo systemctl reload nginx
 ```
 ---
 - NB: You can comment out anything in the configurate file with `#` at the beginning of each option's lines. 
@@ -273,95 +280,153 @@ sudo systemctl reload apache2
 ### Step 8: Test PHP Processing
 Create a test file for your empty web root:
 ```bash
-sudo echo 'Hello LAMP from hostname ' $(TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/metadata/public-hostname) 'with public IP' $(TOKEN='curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/metadata/public-ipv4) > /var/www/projectlamp/index.html
+sudo bash -c 'echo "Hello LEMP from hostname <b>$(TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
+-H "X-aws-ec2-metadata-token-ttl-seconds: 21600") && curl -H "X-aws-ec2-metadata-token: $TOKEN" \
+-s http://169.254.169.254/latest/meta-data/public-hostname)</b><br>with public IP <b>$(TOKEN=$(curl -X PUT \
+"http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600") && \
+curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/meta-data/public-ipv4)</b>" \
+> /var/www/projectLEMP/index.html'
 
 ```
 Visit:
 ```
 http://<EC2_PUBLIC_IP>:80
 ```
-- If you see the text from `echo` command you wrote to the index.html, then it means your Apache Virtual host is working. 
-- NB: That index.html will always take precedence over other files with the default DirectoryIndex settings on Apache.
+- If you see the text from `echo` command you wrote to the index.html, then it means your Nginx is working. 
+- NB: That index.html will always take precedence over other files with the default settings on Nginx.
 ---
 
-### Step 9: Enable PHP on the website
-If you want to change the behavior of DirectoryIndex
+### Step 9: Testing PHP with Nginx
+
+##### Create a new file called `info.php` inside the document root:
 ```bash
-sudo vim /etc/apache2/mods-enabled/dir.conf
+nano /var/www/projectLEMP/info.php
 ```
-Change:
-```apache
-DirectoryIndex index.html index.cgi index.pl index.php index.xhtml index.htm
-```
-To:
-```apache
-DirectoryIndex index.php index.html index.cgi index.pi index.xhtml index.htm
-```
-Save and close the file. Reload Apache with this command:
-```bash
-sudo systemctl reload apache2
-```
-##### Create a new file called `index.php` inside the web root:
-```bash
-vim /var/www/projectlamp/index.php
-```
-Add this to the blank file:
+Type or paste into the file:
 ```php
 <?php
 phpinfo();
 ?>
 ```
+---
+- NB: phpinfo() return information about your server.
+---
+You can access this page by visiting the ip address in your config file:
+```php
+http://`server_domain_or_IP`/info.php
+```
 - You should see this:
-![mysql](./images/4e.PNG)
+![mysql](./images/3.PNG)
 ---
-
-### Step 10: Firewall Configuration (If Using UFW)
+NB: After checking the info, it is best to remove the file as it contains sensitive information about your PHP environment and your Ubuntu server.  You use `rm` to remove that file. You can always get that file if you need it.
 ```bash
-sudo ufw allow OpenSSH
-sudo ufw allow 'Apache Full'
-sudo ufw enable
+sudo rm /var/www/your_domain/info.php
 ```
 
+### Step 10: Retrieving data from MySQL database with PHP
+- Here, We will create a database with `To do list` and then access it and then let Nginx website query the data to display it.
+---
+Create Database named `student` and a user named `law`. Feel free to replace them. 😎
+- First, we connect to MySQL console using the `root` account and enter password:
+```bash
+sudo mysql -u root -p
+```
+- Create Database  `student`:
+```sql
+CREATE DATABASE `student`;
+```
+- Create  a user  `law` using mysql_native_password as default authentication. 
+```sql
+CREATE USER 'law'@'%' IDENTIFIED WITH mysql_native_password BY 'PassWord.1' ;
+```
+- Grant `law` permission over the `student` database. 
+```sql
+GRANT ALL PRIVILEGES ON `student`.* TO 'law'@'%' ;
+```
+- NB: This gives `law` user full privileges over `student`. User cannot create or modify other databases on the server. 
+---
+- Exit MySQL shell with: 
+```sql
+exit ;
+```
+- Test if new user has proper permission by relogging in to the console again.: 
+```sql
+sudo mysql -u `user` -p
+```
+- Enter the password when prompted.
+- Confirm you have access to the `student` database: 
+```sql
+SHOW DATABASES;
+```
+- This is the output:
+![mysql](./images/1a.PNG)
 ---
 
-### Step 10: Testing MySQL with PHP
-Create a PHP file:
-```bash
-sudo nano /var/www/projectlamp/db_test.php
+### Step 11: Create Test Table
+Create a test table named todo_list. Run this:
+```sql
+CREATE TABLE student.todo_list(
+    item_id INT AUTO_INCREMENT,
+    content VARCHAR (255),
+    PRIMARY KEY (item_id)
+);
 ```
-Example code:
+Insert a few rows of content in the test table:
+```sql
+INSERT INTO student.todo_list (content) VALUES ("My first Important item");
+INSERT INTO student.todo_list (content) VALUES ("My Second one I added is rought");
+INSERT INTO student.todo_list (content) VALUES ("My third in the street");
+```
+To confirm that data is successfully saved into the table:
+```sql
+SELECT * FROM student.todo_list;
+```
+You should see something like this :
+---
+![db-table](./images/1c.PNG)
+---
+- Confirm and exit
+```sql
+exit;
+```
+---
+
+### 12. PHP Scripts that connect to MySQL and Query for the Content
+Create a new PHP file in custom web root directory:
+```bash
+nano /var/www/projectLEMP/todo_list.php
+```
+PHP script connect to MySQL and queries for content of the todo_list table, displaying results in a list:
 ```php
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "your_mysql_password";
+$user = 'law';
+$password = 'PassWord.1';
+$database= 'student';
+$table = 'todo_list';
 
-// Create connection
-$conn = new mysqli($servername, $username, $password);
-
-// Check connection
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+try {
+   $db = new PDO ("mysql:host=localhost;dbname=$database", $user, $password);
+   echo "<h2>TODO</h2><ol>";
+   foreach ($db->query ("SELECT content FROM $table") as $row) {
+      echo "<li>" . $row['content']  .  "</li>";
+    }
+    echo "</ol>";
+} catch (PDOException $e) {
+    print "Error!: " . $e->getMessage() . "<br/>";
+    die();
 }
-echo "Connected successfully";
 ?>
 ```
-Visit:
-```
-http://<EC2_PUBLIC_IP>/db_test.php
-```
-
+Save and close the file when done
 ---
-
-## 3. Troubleshooting
-| Issue | Solution |
-|-------|----------|
-| Apache not starting | `sudo journalctl -xe` to check logs |
-| PHP file downloads instead of executing | Ensure `libapache2-mod-php` is installed |
-| MySQL access denied | Re-run `mysql_secure_installation` |
-| Port 80 not reachable | Check AWS security group rules |
-| UFW blocking traffic | Allow Apache in UFW |
-
+Access this page in your web browser by visiting this:
+---
+```bash
+http://<Public_domain_or_IP>/todo_list.php
+```
+You should see a page like this:
+---
+![todo-list](./images/1d.PNG)
 ---
 
 ## 4. Cleanup
@@ -372,7 +437,7 @@ If you no longer need the setup:
 ---
 
 ## 5. Architecture Diagram
-![LAMP AWS Architecture](lamp_architecture_complete.png)
+![LAMP AWS Architecture](lemp_architecture_complete.png)
 
 ---
 **End of Guide**
