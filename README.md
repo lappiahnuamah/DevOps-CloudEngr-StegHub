@@ -12,5 +12,6 @@ As you explore this repository, expect to find a mix of resources and insights r
 ### Contents of This Repository (and a bit of description)
 
 - **Project 1: [Deploy a Complete LAMP Stack on AWS](https://github.com/lappiahnuamah/DevOps-CloudEngr-StegHub/tree/main/1.LAMP_Stack)** - In this project, I successfully deployed a LAMP (Linux, Apache, MySQL, PHP) web stack on an EC2 instance in AWS.
+- **Project 2: [Deploy a Complete LEMP Stack on AWS](https://github.com/lappiahnuamah/DevOps-CloudEngr-StegHub/tree/main/2.LEMP_Stack)** - In this project, I successfully deployed a LEMP (Linux, Nginx, MySQL, PHP) web stack on an EC2 instance in AWS.
 
 
