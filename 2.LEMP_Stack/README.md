@@ -362,6 +362,7 @@ sudo mysql -u `user` -p
 SHOW DATABASES;
 ```
 - This is the output:
+---
 ![mysql](./images/1a.PNG)
 ---
 
