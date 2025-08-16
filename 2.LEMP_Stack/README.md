@@ -10,6 +10,7 @@ The **LEMP stack** is a web service solution stack consisting of:
 - **M**ySQL/MariaDB – Database
 - **P**HP – Scripting language
 
+
 We will deploy the LEMP stack on an Amazon EC2 instance running Ubuntu.
 
 ---
