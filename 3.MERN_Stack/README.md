@@ -1,14 +1,14 @@
 # MERN Stack Implementation on AWS
 ---
 ## Diagram
-![LEMP AWS_Architecture](dia.png)
+![MERN AWS_Architecture](../3.MERN_Stack/images/architectural.png)
 ---
 ## Overview
-The **LEMP stack** is a web service solution stack consisting of:
-- **L**inux – Operating system
-- **E(N)**ginx – Web server
-- **M**ySQL/MariaDB – Database
-- **P**HP – Scripting language
+The **MERN Stack** is a web service solution stack consisting of:
+- **M**ongoDB – Document-based NO-SQL Database
+- **E**xpressJS – Server side Web Application for Node.js
+- **R**eactJS – A Frontend Framework based on Javascript
+- **N**odeJS – A JavaScript Runtime Environment
 
 We will deploy the LEMP stack on an Amazon EC2 instance running Ubuntu.
 
