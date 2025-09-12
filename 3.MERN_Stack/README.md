@@ -149,7 +149,7 @@ npm init
 ```
 - NB: This will create `package.json` which contains information about your application and the dependencies that it needs to run. Press Enter to accept default values, then type yes to accept everything. 
 ---
-![mysql-status](../1.LAMP_Stack/images/4a.PNG)
+![package json](../3.MERN_Stack/images/1aa.PNG)
 ---
 Log into mysql by typing this command
 ```bash
