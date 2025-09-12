@@ -326,27 +326,33 @@ module.exports = router;
 ---
 ### Step 8: Setting Up MongoDB Database
 We will need a database to store our data. Here we will use MongoDB. So let's SignUp for a shared clusters free account. 
-```bash
-sudo bash -c 'echo "Hello LEMP from hostname <b>$(TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
--H "X-aws-ec2-metadata-token-ttl-seconds: 21600") && curl -H "X-aws-ec2-metadata-token: $TOKEN" \
--s http://169.254.169.254/latest/meta-data/public-hostname)</b><br>with public IP <b>$(TOKEN=$(curl -X PUT \
-"http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600") && \
-curl -H "X-aws-ec2-metadata-token: $TOKEN" -s http://169.254.169.254/latest/meta-data/public-ipv4)</b>" \
-> /var/www/projectLEMP/index.html'
-
-```
-Visit:
-```
-http://<EC2_PUBLIC_IP>:80
-```
-- If you see the text from `echo` command you wrote to the index.html, then it means your Nginx is working. 
-- NB: That index.html will always take precedence over other files with the default settings on Nginx.
+This is the Overview of the MongoDB pAGE
 ---
-- You will see this:
+![overview](../3.MERN_Stack/images/1bb.PNG)
 ---
-![echo-cmd](./images/4.PNG)
+- Click on Network Access and make sure you allow access to the MongoDB database from anywhere (It's ideal for testing but not recommend in an actual environment).
 ---
-
+![network_access](../3.MERN_Stack/images/1bbbb.PNG)
+---
+- NB: TMake sure you change the time of deleting the entry from 6 Hours to 1 Week. 
+---
+#### Creating a MongoDB Database and Collection
+- Click on Clusters
+---
+![clusters](../3.MERN_Stack/images/clu.PNG)
+---
+- Go through the options and create a cluster.
+   - Give your cluster a name. 
+   - Choose `aws` as a provider.
+   - Choose a region closer to you.
+   - Create the cluster deployment
+---
+![clusters](../3.MERN_Stack/images/clu2.PNG)
+---
+- Click on Browse Collections
+---
+![clusters](../3.MERN_Stack/images/clu3.PNG)
+---
 ### Step 9: Testing PHP with Nginx
 
 ##### Create a new file called `info.php` inside the document root:
