@@ -266,41 +266,64 @@ npm install mongoose
 ```bash
 touch todo.js
 ```
-To save and close the file completely:
+- Copy and paste the code into `todo.js`
+```bash
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+//Create schema for todo
+const TodoSchema = new Schema ({
+action: {
+type: String,
+required: [true, 'The todo text field is required']
+}
+})
+
+//Create model for todo
+const Todo = mongoose.model('todo', TodoSchema);
+
+module.exports = Todo;
+```
+To save and close the file completely with nano:
 - Hit the `ctrl + o` and Enter. That will save the file
 - Type `ctrl + x` to close the file
 ---
-- NB: using `/var/www/projectLEMP` tells Nginx to serve projectLEMP using that as its web root directory.
-- listen - Defines what port Nginx should listen on. In our case, port 80, default port of HTTP.
-- server_name - defines which ip address or domain names the server should respond to.
----
-Activate your configuration by linking to the config file from Nginx's `sites-enabled` directory:
+- Let's Update teh `api.js` in our `routes` directory to make use of the new model
+- Open `api.js` with `vim api.js`. Delete the existing code with this command `:%d`  and paste the code below into it. 
 ```bash
-sudo ln -s /etc/nginx/sites-available/projectLEMP /etc/nginx/sites-enabled
-```
----
-- NB: The above will tell Nginx to use the configuration when reloaded. 
----
-Test your configuration:
-```bash
-sudo nginx -t
-```
-- It should look like this if everything is OK, if any errors check the config again:
----
-![nginx-test](./images/2e.PNG)
----
-Disable default Nginx host that is currently configured to listen on port 80:
-```bash
-sudo unlink /etc/nginx/sites-enabled/default
-```
-Reload Nginx to apply the changes:
-```bash
-sudo systemctl reload nginx
-```
----
-- NB: You can comment out anything in the configurate file with `#` at the beginning of each option's lines. 
----
+const express = require ('express');
+const router = express.Router();
+const Todo = require('../models/todo');
 
+router.get('/todos', (req, res, next) => {
+
+//this will return all the data, exposing only the id and action field to the client
+Todo.find({}, 'action')
+.then(data => res.json(data))
+.catch(next)
+});
+
+router.post('/todos', (req, res, next) => {
+if(req.body.action){
+Todo.create(req.body)
+.then(data => res.json(data))
+.catch(next)
+}else {
+res.json({
+error: "The input field is empty"
+})
+}
+});
+
+router.delete('/todos/:id', (req, res, next) => {
+Todo.findOneAndDelete ({"_id": req.params.id})
+.then(data => res.json(data))
+.catch(next)
+});
+
+module.exports = router;
+```
+---
 ### Step 8: Test PHP Processing
 Create a test file for your empty web root:
 ```bash
