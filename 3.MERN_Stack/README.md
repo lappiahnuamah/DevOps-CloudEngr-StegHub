@@ -230,7 +230,7 @@ curl -s http://169.254.169.254/latest/meta-data/public-hostname
    - Create a new task
    - Display list of all tasks
    - Delete a completed task.
-     Each task will used a standard HTTP requst methods like the `POST`, `GET`, `DELETE` respectively so we will have to create routes for each endpoints that the TO-DO app depends on. 
+      - Each task will used a standard HTTP requst methods like the `POST`, `GET`, `DELETE` respectively so we will have to create routes for each endpoints that the TO-DO app depends on. 
 - Create a folder called `routes` inside `Todo`
 ```bash
 mkdir routes
@@ -324,8 +324,8 @@ Todo.findOneAndDelete ({"_id": req.params.id})
 module.exports = router;
 ```
 ---
-### Step 8: Test PHP Processing
-Create a test file for your empty web root:
+### Step 8: Setting Up MongoDB Database
+We will need a database to store our data. Here we will use MongoDB. So let's SignUp for a shared clusters free account. 
 ```bash
 sudo bash -c 'echo "Hello LEMP from hostname <b>$(TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
 -H "X-aws-ec2-metadata-token-ttl-seconds: 21600") && curl -H "X-aws-ec2-metadata-token: $TOKEN" \
