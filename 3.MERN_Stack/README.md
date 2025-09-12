@@ -112,43 +112,40 @@ sudo apt update && sudo apt upgrade -y
 
 ---
 
-### Step 4: Install Nginx Web Server
+### Step 4: Install Node.js on the server
+Get the location of Node.js from Ubuntu
 ```bash
-sudo apt install nginx -y
+curl -fsSL https://deb.nodesource.com/setup_24.x  | sudo  -E bash -
 ```
 ---
-Check the status of Nginx. If it's green, it means you did everything well
+Install Node.js 
 ```bash
-sudo systemctl status nginx
+sudo apt-get install -y nodejs
 ```
-- You should see this if everything is well
+- NB: This will install npm and nodejs. NPM is a package manager for Node like rpm for redis, apt for Ubuntu and yum for most unix/linux devices.
 ---
-![nginx-success](./images/2.PNG)
----
-- Test: Visit `http://<EC2_PUBLIC_IP>` in your browser.
----
-![nginx-webpage](./images/1.PNG)
----
-- Test: You can also test in your terminal with these commands
+- Verify the node installation
 ```bash
-curl http://localhost:80 
+node -v
 ```
-or
+- Verify the node installation
 ```bash
-curl http://127.0.0.1:80
+npm -v
 ```
----
-![nginx-webpage](./images/1f.PNG)
----
-
-### Step 5: Installing MySQL
+### Step 5: Application Code Setup
+- Create a new directory for the TO-DO project
 ```bash
-sudo apt install mysql-server -y
+mkdir Todo
 ```
-Verify MySQL:
+- Change your current directory to the newly created Todo directory:
 ```bash
-sudo systemctl status mysql
+cd Todo
 ```
+- Initialise your project
+```bash
+npm init
+```
+- NB: This will create `package.json` which contains information about your application and the dependencies that it needs to run. Press Enter to accept default values, then type yes to accept everything. 
 ---
 ![mysql-status](../1.LAMP_Stack/images/4a.PNG)
 ---
