@@ -151,57 +151,54 @@ npm init
 ---
 ![package json](../3.MERN_Stack/images/1aa.PNG)
 ---
-Log into mysql by typing this command
-```bash
-sudo mysql
-```
-- You will see this:
----
-![mysql](../1.LAMP_Stack/images/3a.PNG)
----
-Set a password for root user using mysql_native_password as default authentication method:
-```bash
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'PassWord.1'; 
-```
-Exit the MySQL shell with:
-```bash
-exit
-```
-Start the interactive script:
-```bash
-sudo mysql_secure_installation
-```
-- This will ask if you want to configure the `VALIDATE PASSWORD PLUGIN`, type y. If you answer y, you'll be asked to select a level of password validation :
----
-![mysql](../1.LAMP_Stack/images/3b.PNG)
----
-![mysql-validate-password](../1.LAMP_Stack/images/4.PNG)
----
-Test if you're able to log in by typing:
-```bash
-sudo mysql -p
-```
-NB: -p flag will prompt you for the password used after changing the root user password.
-To exit the MySQL console, type:
-```bash
-exit
-```
 
+### Step 6: Install ExpressJs
+```bash
+npm install express
+```
+- Create a file `index.js` with this command
+```bash
+touch index.js
+```
+- NB: Always `ls` to confirm whenever you create something be it a file or folder. 
 ---
+-Install the `dotenv` module
+```bash
+npm install dotenv
+```
+- Open the `index.js` file with either vim or nano
+```bash
+vim index.js
+```
+or
+```bash
+nano index.js
+```
+- Type the code and save:
+```bash
+const express = require('express');
+require('dotenv').config();
 
-### Step 6: Install PHP
-```bash
-sudo apt install php-fpm php-mysql
+const app = express();
+
+const port = process.env.PORT || 5000;
+
+app.use((req, res, next) => {
+        res.header("Access-Control-Allow-Origin", "\*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        next();
+
+});
+
+app.use((req, res, next) => {
+        res.send('Welcome to Express');
+});
+
+app.listen(port, () => {
+        console.log(`Server running on port ${port}`)
+});
+
 ```
----
-- NB: php-fpm stands for "PHP fastCGI process manager". It tells Nginx to pass PHP requests to this software.
-- php-mysql, php module that allows PHP to communicate with MySQL-based databases.
----
-Check PHP version:
-```bash
-php -v
-```
-![mysql](../1.LAMP_Stack/images/4b.PNG)
 ---
 
 ### Step 7: Configuring Nginx to Use PHP Processor
