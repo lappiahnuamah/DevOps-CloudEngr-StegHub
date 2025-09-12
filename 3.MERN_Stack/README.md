@@ -207,10 +207,30 @@ node index.js
 - You should see this if it works
 - ---
 ![nodejs server](../3.MERN_Stack/images/1a.PNG)
+- NB: Make sure you add the port number to the Security Group inbound rule  so that you can access the site. 
 ---
+- Open your browser and acess your site
+```bash
+http://<PublicIP-or-PublicDNS>:5000
+```
+- If you don't know your IP address you can try this command for public ip address
+```bash
+curl -s http://169.254.169.254/latest/meta-data/public-ipv4
+```
+- Or this command for Public DNS name.
+```bash
+curl -s http://169.254.169.254/latest/meta-data/public-hostname
+```
+- Access your site
+- ---
+![express](../3.MERN_Stack/images/1b.PNG)
 
-### Step 7: Configuring Nginx to Use PHP Processor
-Create a directory for your website using `mkdir`. In our case:
+### Step 7: Routes
+- Our TO-DO application will be doing three things:
+   - Create a new task
+   - Display list of all tasks
+   - Delete a completed task
+  
 ```bash
 sudo mkdir /var/www/projectLEMP
 ```
