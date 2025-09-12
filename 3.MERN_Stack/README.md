@@ -288,7 +288,7 @@ To save and close the file completely with nano:
 - Hit the `ctrl + o` and Enter. That will save the file
 - Type `ctrl + x` to close the file
 ---
-- Let's Update teh `api.js` in our `routes` directory to make use of the new model
+- Let's Update the `api.js` in our `routes` directory to make use of the new model
 - Open `api.js` with `vim api.js`. Delete the existing code with this command `:%d`  and paste the code below into it. 
 ```bash
 const express = require ('express');
@@ -355,13 +355,15 @@ This is the Overview of the MongoDB pAGE
 ---
 - Click on create database
 ---
-![clusters](../3.MERN_Stack/images/1ee.PNG)
+![clusters](../3.MERN_Stack/images/1f.PNG)
 ---
 ![clusters](../3.MERN_Stack/images/1d.PNG)
 ---
 - Enter the name you want to give your database then click `create`
 ---
-![clusters](../3.MERN_Stack/images/1ee.PNG)
+![clusters](../3.MERN_Stack/images/1e.PNG)
+---
+![clusters](../3.MERN_Stack/images/1c.PNG)
 ---
 ### Step 9: Testing PHP with Nginx
 
