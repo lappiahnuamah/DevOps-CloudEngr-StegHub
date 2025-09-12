@@ -365,21 +365,20 @@ This is the Overview of the MongoDB pAGE
 ---
 ![clusters](../3.MERN_Stack/images/1c.PNG)
 ---
-### Step 9: Testing PHP with Nginx
-
-##### Create a new file called `info.php` inside the document root:
+### Step 9: Connecting the database
+- In the `index.js` we specified `process.env` to access environment variables but that file is not created. Let's create that file. 
 ```bash
-nano /var/www/projectLEMP/info.php
+touch .env
+vi .env
 ```
-Type or paste into the file:
-```php
-<?php
-phpinfo();
-?>
+- Add the connection string to access the database in it as below:
+```bash
+DB = 'mongodb+srv://db_user:<db_password>@cluster0.mignz4q.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 ```
+- NB: Ensure to update `<username>` in our case it is `db_user`, `<db_password>`, `<network-address>` in our case it is `cluster0.mignz4q.mongodb.net` and `<database>` according to your setup. 
 ---
-- NB: phpinfo() return information about your server.
----
+
+### Step 9: How to get your connection string
 You can access this page by visiting the ip address in your config file:
 ```php
 http://`server_domain_or_IP`/info.php
