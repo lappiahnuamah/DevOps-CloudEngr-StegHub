@@ -10,7 +10,7 @@ The **MERN Stack** is a web service solution stack consisting of:
 - **R**eactJS – A Frontend Framework based on Javascript
 - **N**odeJS – A JavaScript Runtime Environment
 
-We will deploy the LEMP stack on an Amazon EC2 instance running Ubuntu.
+We will deploy the MERN stack on an Amazon EC2 instance running Ubuntu.
 
 ---
 
@@ -22,6 +22,8 @@ Before starting, ensure you have:
 4. AWS **security group rules** allowing:
    - HTTP (Port 80)
    - SSH (Port 22)
+   - Custom Port (Port 3000) - For the Frontend
+   - Custom Port (Port 5000) - For the Backend
 5. A local terminal (Linux/Mac/git bash) or **PuTTY** (Windows).
 
 ---
