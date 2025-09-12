@@ -174,7 +174,7 @@ or
 ```bash
 nano index.js
 ```
-- Type the code and save:
+- Copy the code and save:
 ```bash
 const express = require('express');
 require('dotenv').config();
@@ -198,6 +198,15 @@ app.listen(port, () => {
 });
 
 ```
+- NB: The above code specifies the port 5000. This will be useful later. Use `:w` to save in vim and use `:qa` to exit vim and if you used nano, you can press `ctrl + o` then enter to save then `ctrl+x` to exit nano.
+---
+- Start the server to see if it works
+```bash
+node index.js
+```
+- You should see this if it works
+- ---
+![nodejs server](../3.MERN_Stack/images/1a.PNG)
 ---
 
 ### Step 7: Configuring Nginx to Use PHP Processor
