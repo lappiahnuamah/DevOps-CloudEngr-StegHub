@@ -325,7 +325,7 @@ module.exports = router;
 ```
 ---
 ### Step 8: Setting Up MongoDB Database
-We will need a database to store our data. Here we will use MongoDB. So let's SignUp for a shared clusters free account. 
+- We will need a database to store our data. Here we will use MongoDB. So let's SignUp for a shared clusters free account. 
 This is the Overview of the MongoDB pAGE
 ---
 ![overview](../3.MERN_Stack/images/1bb.PNG)
@@ -343,7 +343,7 @@ This is the Overview of the MongoDB pAGE
 ---
 - Go through the options and create a cluster.
    - Give your cluster a name. 
-   - Choose `aws` as a provider.
+   - Choose `aws` or any as a provider.
    - Choose a region closer to you.
    - Create the cluster deployment
 ---
@@ -352,6 +352,16 @@ This is the Overview of the MongoDB pAGE
 - Click on Browse Collections
 ---
 ![clusters](../3.MERN_Stack/images/clu3.PNG)
+---
+- Click on create database
+---
+![clusters](../3.MERN_Stack/images/1ee.PNG)
+---
+![clusters](../3.MERN_Stack/images/1d.PNG)
+---
+- Enter the name you want to give your database then click `create`
+---
+![clusters](../3.MERN_Stack/images/1ee.PNG)
 ---
 ### Step 9: Testing PHP with Nginx
 
