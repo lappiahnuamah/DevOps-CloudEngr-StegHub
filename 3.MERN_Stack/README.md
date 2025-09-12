@@ -229,44 +229,42 @@ curl -s http://169.254.169.254/latest/meta-data/public-hostname
 - Our TO-DO application will be doing three things:
    - Create a new task
    - Display list of all tasks
-   - Delete a completed task
-  
+   - Delete a completed task.
+     Each task will used a standard HTTP requst methods like the `POST`, `GET`, `DELETE` respectively so we will have to create routes for each endpoints that the TO-DO app depends on. 
+- Create a folder called `routes` inside `Todo`
 ```bash
-sudo mkdir /var/www/projectLEMP
+mkdir routes
 ```
-Assign ownership of directory to `$USER` environment variable, references your current system user:
+- Inside directory `routes` create a file `api.js` and copy these codes into it. We will update it later.
 ```bash
-sudo chown -R $USER:$USER /var/www/projectLEMP
+const express = require ('express');
+const router = express.Router();
+
+router.get('/todos', (req, res, next) => {
+});
+
+router.post('/todos', (req, res, next) => {
+});
+
+router.delete('/todos/:id', (req, res, next) => {
+});
+
+module.exports = router;
 ```
-Create and open a new configuration file in Nginx's `sites-available` directory using either vim or nano :
+- Create Models directory inside `Todo` to make use of the Mongodb
 ```bash
-sudo nano /etc/nginx/sites-available/projectLEMP
+mkdir models
 ```
-Paste the following into the blank file:
-```nginx
-#/etc/nginx/sites-available/projectLEMP
-
-server {
-   listen 80;
-   server_name projectLEMP www.projectLEMP;
-   root /var/www/projectLEMP
-
-   index index.html index.htm index.php;
-
-   location / {
-      try_files $uri $uri/ =404;
-   }
-
-   location ~ \.php$ {
-      include snippets/fastcgi-php.conf;
-      fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
-   }
-
-   location ~ /\.ht {
-      deny all;
-   }
-
-}
+---
+- NB: Models are used to define database schema. This talks about how our data is constructed and also stored inside the database.
+---
+- Install `mongoose` to create a `Schema` and a `model`
+```bash
+npm install mongoose
+```
+- change directory to `models` and create a file `todo.js`
+```bash
+touch todo.js
 ```
 To save and close the file completely:
 - Hit the `ctrl + o` and Enter. That will save the file
