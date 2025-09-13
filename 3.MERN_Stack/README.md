@@ -576,8 +576,16 @@ vi package.json
 ```
 - NB: The reason for the proxy configuration is to access the application directly from the browser easily by typing `http://localhost:5000` instead of typing `http://localhost:5000/api/todos` 
 ---
+- Ensure you are in the `Todo` directory and run this command
+```bash
+npm run dev
+```
+- NB: Your app should start running on port 3000. If you can't see your app make sure to check if you have open TCP port 3000 on the EC2 server. You can do that by adding an inbound security group with port 3000 opened. 
+---
+![React running app](../3.MERN_Stack/images/c3.PNG)
+---
 
-### 12. PHP Scripts that connect to MySQL and Query for the Content
+### 13. Creating Your React Components
 Create a new PHP file in custom web root directory:
 ```bash
 nano /var/www/projectLEMP/todo_list.php
