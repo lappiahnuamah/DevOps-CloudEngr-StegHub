@@ -537,32 +537,44 @@ module.exports = router;
 ![Postman_Post](../3.MERN_Stack/images/p2.PNG)
 ---
 ### Step 12: Frontend Creation
-Create a test table named todo_list. Run this:
-```sql
-CREATE TABLE student.todo_list(
-    item_id INT AUTO_INCREMENT,
-    content VARCHAR (255),
-    PRIMARY KEY (item_id)
-);
+- We create our user interface to interact with the application via API. In the same root directory as your backend code, run this command:
+```bash
+npx create-react-app client
 ```
-Insert a few rows of content in the test table:
-```sql
-INSERT INTO student.todo_list (content) VALUES ("My first Important item");
-INSERT INTO student.todo_list (content) VALUES ("My Second one I added is rought");
-INSERT INTO student.todo_list (content) VALUES ("My third in the street");
-```
-To confirm that data is successfully saved into the table:
-```sql
-SELECT * FROM student.todo_list;
-```
-- You should see something like this :
+- NB: This will create a directory called `client` in the TODO directory. 
 ---
-![db-table](./images/1c.PNG)
----
-- Confirm and exit
-```sql
-exit;
+#### Installing Dependecies and Running our React App
+- Let's install some dependencies for testing our react app.
+1. Install `concurrently`. Concurrently will let you run more than one command simultaneously from the same terminal window
+```bash
+npm install concurrently --save-dev
 ```
+2. Install nodemon. This will run and monitor the server and update new changes if there's any change in the server code.
+```bash
+npm install nodemon --save-dev
+```
+3. Open the `package.json` file and change the `"scripts"` and replace it with the code below
+```bash
+"scripts": {
+"start": "node index.js", 
+"start-watch": "nodemon index.js", 
+"dev" : "concurrently \"npm run start-watch\" \"cd client && npm start\"" 
+} ,
+```
+4. Configure Proxy in `package.json`
+- Change directory to `client`
+```bash
+cd client
+```
+- Open the `package.json` file
+```bash
+vi package.json
+```
+- Add the key value pair in the `package.json` file
+```bash
+"proxy": "http://localhost:5000"
+```
+- NB: The reason for the proxy configuration is to access the application directly from the browser easily by typing `http://localhost:5000` instead of typing `http://localhost:5000/api/todos` 
 ---
 
 ### 12. PHP Scripts that connect to MySQL and Query for the Content
