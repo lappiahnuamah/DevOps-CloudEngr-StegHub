@@ -446,7 +446,7 @@ node index.js
 ---
 - Test all the API endpoints and make sure they are working. For the endpoint that require body, you should send JSON back with the necessary fields as per your code. 😎
 ---
-- Create a `POST` request to the API with the url `http://<PublicIP-or-PublicDNS>:5000/api/todos`. 
+- Create a `POST` request to the API with the url `http://<PublicIP-or-PublicDNS>:5000/api/todos`.  This will make a new task to our TO-DO list and will be stored in our database.
 ---
 ![Postman_Post](../3.MERN_Stack/images/gss.PNG)
 ---
@@ -454,17 +454,15 @@ node index.js
 ---
 ![Postman_Post](../3.MERN_Stack/images/gai.PNG)
 ---
-```sql
-CREATE DATABASE `student`;
-```
-- Create  a user  `law` using mysql_native_password as default authentication. 
-```sql
-CREATE USER 'law'@'%' IDENTIFIED WITH mysql_native_password BY 'PassWord.1' ;
-```
-- Grant `law` permission over the `student` database. 
-```sql
-GRANT ALL PRIVILEGES ON `student`.* TO 'law'@'%' ;
-```
+- Create  a `GET` request to the API on the url `http://<PublicIP-or-PublicDNS>:5000/api/todos`. This will get all existing records from our TO-DO application which is stored in our database and display it as a response to our request. 
+---
+![Postman_Post](../3.MERN_Stack/images/ga.PNG)
+---
+- If we want to delete any of our task, we send a `DELETE` request to delete the task from our TO-DO list application.
+NB: Anytime you want to delete a task, don't forget that you will need its `ID` as part of the `DELETE` request as I have circled in the image below
+---
+![Postman_Post](../3.MERN_Stack/images/de.PNG)
+---
 - NB: This gives `law` user full privileges over `student`. User cannot create or modify other databases on the server. 
 ---
 - Exit MySQL shell with: 
