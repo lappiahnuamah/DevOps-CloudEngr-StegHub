@@ -441,8 +441,8 @@ node index.js
 ![Database connection](../3.MERN_Stack/images/1l.PNG)
 ---
 ---
-### Step 10: Retrieving data from MySQL database with PHP
-- Here, We will create a database with `To do list` and then access it and then let Nginx website query the data to display it.
+### Step 11: Testing Backend Code Without A Frontend using RESTFul API
+- API stands for `Application Programming Interface`. Since we have only backend and configured the database, we will be working on our react frontend but since that is not yet done, we need to test our code by using RESTful API. In this case, we will use `Postman` to test our API. Install [Postman](https://www.postman.com/)
 ---
 Create Database named `student` and a user named `law`. Feel free to replace them. 😎
 - First, we connect to MySQL console using the `root` account and enter password:
