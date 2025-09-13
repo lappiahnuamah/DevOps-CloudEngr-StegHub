@@ -463,12 +463,10 @@ NB: Anytime you want to delete a task, don't forget that you will need its `ID` 
 ---
 ![Postman_Post](../3.MERN_Stack/images/de.PNG)
 ---
-- NB: This gives `law` user full privileges over `student`. User cannot create or modify other databases on the server. 
+- Now let's do the `GET` request again. First we were having three tasks but since we have deleted one. It should be left with two. 
 ---
-- Exit MySQL shell with: 
-```sql
-exit ;
-```
+![Postman_Post](../3.MERN_Stack/images/de2.PNG)
+---
 - Test if new user has proper permission by relogging in to the console again.: 
 ```sql
 sudo mysql -u `user` -p
