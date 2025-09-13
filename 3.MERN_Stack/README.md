@@ -444,12 +444,16 @@ node index.js
 ### Step 11: Testing Backend Code Without A Frontend using RESTFul API
 - API stands for `Application Programming Interface`. Since we have only backend and configured the database, we will be working on our react frontend but since that is not yet done, we need to test our code by using RESTful API. In this case, we will use `Postman` to test our API. Install [Postman](https://www.postman.com/)
 ---
-Create Database named `student` and a user named `law`. Feel free to replace them. 😎
-- First, we connect to MySQL console using the `root` account and enter password:
-```bash
-sudo mysql -u root -p
-```
-- Create Database  `student`:
+- Test all the API endpoints and make sure they are working. For the endpoint that require body, you should send JSON back with the necessary fields as per your code. 😎
+---
+- Create a `POST` request to the API with the url `http://<PublicIP-or-PublicDNS>:5000/api/todos`. 
+---
+![Postman_Post](../3.MERN_Stack/images/gss.PNG)
+---
+- Make sure you set `header` key `Content-Type` as `application/json`
+---
+![Postman_Post](../3.MERN_Stack/images/gai.PNG)
+---
 ```sql
 CREATE DATABASE `student`;
 ```
