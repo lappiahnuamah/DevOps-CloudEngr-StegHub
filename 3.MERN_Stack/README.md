@@ -536,7 +536,7 @@ module.exports = router;
 ---
 ![Postman_Post](../3.MERN_Stack/images/p2.PNG)
 ---
-### Step 11: Create Test Table
+### Step 12: Frontend Creation
 Create a test table named todo_list. Run this:
 ```sql
 CREATE TABLE student.todo_list(
