@@ -549,7 +549,7 @@ npx create-react-app client
 ```bash
 npm install concurrently --save-dev
 ```
-2. Install nodemon. This will run and monitor the server and update new changes if there's any change in the server code.
+2. Install `nodemon`. This will run and monitor the server and update new changes if there's any change in the server code.
 ```bash
 npm install nodemon --save-dev
 ```
@@ -586,42 +586,191 @@ npm run dev
 ---
 
 ### 13. Creating Your React Components
-Create a new PHP file in custom web root directory:
+- React make use of components which are reusable and are independent building blocks for creating user interface. For our Todo app, we will create two stateful components and one stateless component. Stateful components hold and manage data that can change over time whereas stateless doesn't manage internal [Read More](https://react.dev/reference/react/Component).
+---
+- Run
 ```bash
-nano /var/www/projectLEMP/todo_list.php
+cd client
+cd src
 ```
-PHP script connect to MySQL and queries for content of the todo_list table, displaying results in a list:
-```php
-<?php
-$user = 'law';
-$password = 'PassWord.1';
-$database= 'student';
-$table = 'todo_list';
+- Inside your `srcc` folder create another folder called `components`
+```bash
+mkdir components
+```
+- Move into the `components` directory with 
+```bash
+cd components
+```
+- Inside `components` directory create three files: `Input.js`,  `ListTodo.js` and `Todo.js`. 
+```bash
+touch Input.js ListTodo.js Todo.js
+```
+- Open `Input.js` 
+```bash
+vi Input.js
+```
+- copy and paste the following code into it
+```bash
+import React, { Component } from 'react';
+import axios from 'axios';
+class Input extends Component {
 
-try {
-   $db = new PDO ("mysql:host=localhost;dbname=$database", $user, $password);
-   echo "<h2>TODO</h2><ol>";
-   foreach ($db->query ("SELECT content FROM $table") as $row) {
-      echo "<li>" . $row['content']  .  "</li>";
-    }
-    echo "</ol>";
-} catch (PDOException $e) {
-    print "Error!: " . $e->getMessage() . "<br/>";
-    die();
+state  = {
+action: ""
 }
-?>
+
+addTodo = ()=> {
+const task = {action: this.state.action}
+
+    if(task.action && task.action.length > 0) {
+        axios.post('/api/todos', task)
+          .then(res => {
+            if(res.data) {
+              this.props.getTodos();
+              this.setState({action: ""})
+            }
+         })
+         .catch(err => console.log(err))
+    }else {
+       console.log('input field required')
+    }
+}
+
+handleChange =(e) => {
+this.setState({ 
+action: e.target.value
+})
+}
+
+render() {
+let { action } = this.state;
+return (
+<div>
+<input type="text" onChange={this.handleChange} value={action} />
+<button onClick={this.addTodo}>add todo</button>
+</div>
+) 
+}
+}
+
+export default Input
 ```
-- Save and close the file when done
+- You need to install `axios` inorder to make use of it. It's a Promise based HTTP client for the browser and node.js
 ---
-- Access this page in your web browser by visiting this:
+- Change directory into client folder
 ---
 ```bash
-http://<Public_domain_or_IP>/todo_list.php
+cd ../..
 ```
-- You should see a page like this:
----
-![todo-list](./images/1d.PNG)
----
+- Install `Axios`
+```bash
+npm install axios
+```
+- Go to `Components` directory
+```bash
+cd  src/components
+```
+- Open your `ListTodo.js` directory
+```bash
+vi ListTodo.js
+```
+- Copy and paste the following code into `ListTodo.js`
+```bash
+import React from 'react';
+const ListTodo = ({ todos, deleteTodo }) => {
+
+return (
+<ul>
+{
+todos &&
+todos.length > 0 ?
+(
+todos.map(todo => {
+return (
+<li key={todo._id} onClick={ () => deleteTodo (todo._id) }> {todo.action} </li>
+)
+})
+)
+:
+(
+<li> No todo (s) left </li>
+)
+}
+</ul>
+)
+}
+
+export default ListTodo
+```
+- Then in the `Todo.js` directory
+```bash
+import React, { Component } from 'react';
+import axios from 'axios';
+
+import Input from './Input';
+import ListTodo from './ListTodo';
+
+class Todo extends Component {
+  state = {
+    todos: []
+  }
+
+  componentDidMount() {
+    this.getTodos();
+  }
+
+  getTodos = () => {
+    axios.get('/api/todos')
+      .then(res => {
+        if (res.data) {
+          this.setState({
+            todos: res.data
+          });
+        }
+      })
+      .catch(err => console.log(err));
+  }
+
+  deleteTodo = (id) => {
+    axios.delete(`/api/todos/${id}`)
+      .then(res => {
+        if (res.data) {
+          this.getTodos();
+        }
+      })
+      .catch(err => console.log(err));
+  }
+
+  // NEW: Edit todo
+  editTodo = (id, newAction) => {
+    axios.put(`/api/todos/${id}`, { action: newAction })
+      .then(res => {
+        if (res.data) {
+          this.getTodos();
+        }
+      })
+      .catch(err => console.log(err));
+  }
+
+  render() {
+    let { todos } = this.state;
+    return (
+      <div>
+        <h1>My Todo(s)</h1>
+        <Input getTodos={this.getTodos} />
+        {/* Pass editTodo to ListTodo */}
+        <ListTodo 
+          todos={todos} 
+          deleteTodo={this.deleteTodo} 
+          editTodo={this.editTodo} 
+        />
+      </div>
+    );
+  }
+}
+
+export default Todo;
+```
 
 ## 4. Cleanup
 If you no longer need the setup:
