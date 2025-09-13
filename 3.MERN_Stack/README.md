@@ -378,11 +378,19 @@ DB = 'mongodb+srv://db_user:<db_password>@cluster0.mignz4q.mongodb.net/?retryWri
 - NB: Ensure to update `<username>` in our case it is `db_user`, `<db_password>`, `<network-address>` in our case it is `cluster0.mignz4q.mongodb.net` and `<database>` according to your setup. 
 ---
 
-### Step 9: How to get your connection string
-You can access this page by visiting the ip address in your config file:
-```php
-http://`server_domain_or_IP`/info.php
-```
+### Step 10: How to get your connection string
+- Go to the Clusters Overview Page. You will see `connect` button on your right. Click on it
+---
+- ![connect](../3.MERN_Stack/images/1n.PNG)
+---
+- Click on the `Drivers` where we have `connect to your application`
+---
+- ![connect](../3.MERN_Stack/images/1g.PNG)
+---
+- Select the `Driver` and the version depending on your setup. Then right beneath it, you will see the connection string. Copy it. 
+---
+- ![connect](../3.MERN_Stack/images/1h.PNG)
+---
 - You should see this:
 ![mysql](./images/3.PNG)
 ---
