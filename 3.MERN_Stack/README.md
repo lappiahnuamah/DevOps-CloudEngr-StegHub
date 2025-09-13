@@ -676,31 +676,58 @@ vi ListTodo.js
 ```
 - Copy and paste the following code into `ListTodo.js`
 ```bash
-import React from 'react';
-const ListTodo = ({ todos, deleteTodo }) => {
+import React, { useState } from 'react';
 
-return (
-<ul>
-{
-todos &&
-todos.length > 0 ?
-(
-todos.map(todo => {
-return (
-<li key={todo._id} onClick={ () => deleteTodo (todo._id) }> {todo.action} </li>
-)
-})
-)
-:
-(
-<li> No todo (s) left </li>
-)
-}
-</ul>
-)
-}
+const ListTodo = ({ todos, deleteTodo, editTodo }) => {
+  const [editingId, setEditingId] = useState(null);
+  const [editText, setEditText] = useState('');
 
-export default ListTodo
+  const handleEditClick = (todo) => {
+    setEditingId(todo._id);
+    setEditText(todo.action);
+  };
+
+  const handleSave = (id) => {
+    if (editText.trim()) {
+      editTodo(id, editText);
+      setEditingId(null);
+      setEditText('');
+    }
+  };
+
+  return (
+    <ul>
+      {todos && todos.length > 0 ? (
+        todos.map(todo => (
+          <li key={todo._id}>
+            {editingId === todo._id ? (
+              <>
+                <input
+                  type="text"
+                  value={editText}
+                  onChange={(e) => setEditText(e.target.value)}
+                />
+                <button onClick={() => handleSave(todo._id)}>Save</button>
+                <button onClick={() => setEditingId(null)}>Cancel</button>
+              </>
+            ) : (
+              <>
+                {todo.action}
+                <button onClick={() => handleEditClick(todo)}>Edit</button>
+                <button onClick={() => deleteTodo(todo._id)}>Delete</button>
+              </>
+            )}
+          </li>
+        ))
+      ) : (
+        <li>No todo(s) left</li>
+      )}
+    </ul>
+  );
+};
+
+export default ListTodo;
+
 ```
 - Then in the `Todo.js` directory
 ```bash
