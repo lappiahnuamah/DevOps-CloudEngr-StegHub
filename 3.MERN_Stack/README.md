@@ -387,18 +387,60 @@ DB = 'mongodb+srv://db_user:<db_password>@cluster0.mignz4q.mongodb.net/?retryWri
 ---
 - ![connect](../3.MERN_Stack/images/1g.PNG)
 ---
-- Select the `Driver` and the version depending on your setup. Then right beneath it, you will see the connection string. Copy it. 
+- Select the `Driver` and the version depending on your setup. Then right beneath it, you will see the connection string. Copy it.
 ---
 - ![connect](../3.MERN_Stack/images/1h.PNG)
 ---
-- You should see this:
-![mysql](./images/3.PNG)
+- Since we have the connection string. We need to update the `index.js` to reflect the use of the `.env` so that Node.js can connect to the database. 
+NB: You can delete the existing code in `index.js` by using the command in vim `:%d` after you have press esc. Then Hit `Enter`.
 ---
-NB: After checking the info, it is best to remove the file as it contains sensitive information about your PHP environment and your Ubuntu server.  You use `rm` to remove that file. You can always get that file if you need it.
+- Press `i` to enter the `insert` mode in vim and paste the code below
 ```bash
-sudo rm /var/www/your_domain/info.php
-```
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const routes = require('./routes/api');
+const path = require('path');
+require('dotenv').config();
 
+const app = express();
+const port = process.env.PORT || 5000;
+
+//connect to the database
+mongoose.connect(process.env.DB, { useNewUrlParser: true, useUnifiedTopology: true })
+.then( () => console.log(`Database connected successfully`))
+.catch(err => console.log(err));
+
+//since mongoose promise is deprecated, we overide it with node's promise
+mongoose.Promise = global.Promise;
+
+app.use((req, res, next) => {
+res.header("Access-Control-Allow-Origin", "\*");
+res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+next();
+});
+
+app.use(bodyParser.json());
+app.use('/api', routes);
+
+app.use((err, req, res, next) => {
+console.log(err);
+next();
+});
+
+app.listen(port, () => {
+console.log(`Server running on port ${port}`)
+});
+```
+- Start your server using the command
+```bash
+node index.js
+```
+- You should see this
+---
+![Database connection](../3.MERN_Stack/images/1l.PNG)
+---
+---
 ### Step 10: Retrieving data from MySQL database with PHP
 - Here, We will create a database with `To do list` and then access it and then let Nginx website query the data to display it.
 ---
