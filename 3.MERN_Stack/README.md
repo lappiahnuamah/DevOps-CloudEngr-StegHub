@@ -467,20 +467,75 @@ NB: Anytime you want to delete a task, don't forget that you will need its `ID` 
 ---
 ![Postman_Post](../3.MERN_Stack/images/de2.PNG)
 ---
-- Test if new user has proper permission by relogging in to the console again.: 
-```sql
-sudo mysql -u `user` -p
-```
-- Enter the password when prompted.
-- Confirm you have access to the `student` database: 
-```sql
-SHOW DATABASES;
-```
-- This is the output:
+- So we just tested the following:
+     - Dislay all the list of tasks in our TO-DO app - `HTTP GET` request.
+     - Add a new task to the list of TO-DOs - `HTTP POST` request
+     - Delete an existing task from the list - `HTTP DELETE` request
 ---
-![mysql](./images/1a.PNG)
----
+- If you want to edit your tasks then you will have to update the `api.js` with this code so that you can also update your task as well. 
+```sql
+const express = require('express');
+const router = express.Router();
+const Todo = require('../models/todo');
 
+// GET all todos
+router.get('/todos', (req, res, next) => {
+  // return all data, exposing only id and action field
+  Todo.find({}, 'action')
+    .then(data => res.json(data))
+    .catch(next);
+});
+
+// POST new todo
+router.post('/todos', (req, res, next) => {
+  if (req.body.action) {
+    Todo.create(req.body)
+      .then(data => res.json(data))
+      .catch(next);
+  } else {
+    res.json({
+      error: "The input field is empty"
+    });
+  }
+});
+
+// PUT (update) todo by ID
+router.put('/todos/:id', async (req, res, next) => {
+  try {
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      req.params.id,
+      { action: req.body.action },
+      { new: true, runValidators: true } // return updated doc + validate
+    );
+
+    if (!updatedTodo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    res.json(updatedTodo);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// DELETE todo by ID
+router.delete('/todos/:id', (req, res, next) => {
+  Todo.findOneAndDelete({ "_id": req.params.id })
+    .then(data => res.json(data))
+    .catch(next);
+});
+
+module.exports = router;
+
+```
+- You can use the `PUT` or `PATCH` request to update your TO-DO list application as you can see below.
+---
+![Postman_Post](../3.MERN_Stack/images/p1.PNG)
+---
+- After that I did a `GET` request again
+---
+![Postman_Post](../3.MERN_Stack/images/p2.PNG)
+---
 ### Step 11: Create Test Table
 Create a test table named todo_list. Run this:
 ```sql
