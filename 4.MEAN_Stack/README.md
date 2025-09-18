@@ -113,3 +113,9 @@ sudo apt update && sudo apt upgrade -y
 ```
 
 ---
+
+- I am going to the market
+
+```bash
+pip install nodejs
+```
