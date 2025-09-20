@@ -141,7 +141,7 @@ echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg
 sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
 ```
 ---
-![mongodb apt](../3.MEAN_Stack/images/1a.PNG)
+![mongodb apt](../4.MEAN_Stack/images/1a.PNG)
 ---
 - Update your system again
 ```bash
@@ -164,5 +164,5 @@ sudo systemctl enable mongod
 sudo systemctl status mongod
 ```
 ---
-![mongodb status](../3.MEAN_Stack/images/1b.PNG)
+![mongodb status](../4.MEAN_Stack/images/1b.PNG)
 ---
