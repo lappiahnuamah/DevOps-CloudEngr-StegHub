@@ -119,3 +119,9 @@ sudo apt update && sudo apt upgrade -y
 ```bash
 pip install nodejs
 ```
+---
+```python
+pip install flask
+```
+---
+![This is a mean stack image](../4.MEAN_Stack/images/mean_stack.png)
