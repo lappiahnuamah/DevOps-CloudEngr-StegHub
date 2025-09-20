@@ -22,8 +22,7 @@ Before starting, ensure you have:
 4. AWS **security group rules** allowing:
    - HTTP (Port 80)
    - SSH (Port 22)
-   - Custom Port (Port 3000) - For the Frontend
-   - Custom Port (Port 5000) - For the Backend
+   - Custom Port (Port 3300) - For the Frontend
 5. A local terminal (Linux/Mac/git bash) or **PuTTY** (Windows).
 
 ---
@@ -107,21 +106,63 @@ ssh -i lamp-stack-kp.pem ubuntu@<EC2_PUBLIC_IP>
 ![ssh-success](../1.LAMP_Stack/images/2c.PNG)
 ---
 
-### Step 3: Update the System
+### Step 3: Update and Upgrade the System
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
-
 ---
-
-- I am going to the market
-
+### Step 4: Add Certificates and Install Nodejs
 ```bash
-pip install nodejs
+sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates
 ```
 ---
-```python
-pip install flask
+- Download a script from NodeSource. This actually configures our system so that we can install Node.js 18.x using apt.
+```bash
+curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+```
+- Install Nodejs
+```bash
+sudo apt install -y nodejs
 ```
 ---
-![This is a mean stack image](../4.MEAN_Stack/images/mean_stack.png)
+### Step 5: Install MongoDB
+- Install gnupg and curl
+```bash
+sudo apt-get install -y gnupg curl
+```
+- Download MongoDB GPG key and save to keyring
+```bash
+curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
+  sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
+```
+- Create MongoDB APT repository so that apt can easily fetch MongoDB Packages.
+```bash
+echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | \
+sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+```
+---
+![mongodb apt](../3.MEAN_Stack/images/1a.PNG)
+---
+- Update your system again
+```bash
+sudo apt-get update
+```
+- Install MongoDB
+```bash
+sudo apt-get install -y mongodb-org
+```
+- Start MongoDB service
+```bash
+sudo systemctl start mongod
+```
+- Enable to start on boot
+```bash
+sudo systemctl enable mongod
+```
+- Check status on mongod
+```bash
+sudo systemctl status mongod
+```
+---
+![mongodb status](../3.MEAN_Stack/images/1b.PNG)
+---
