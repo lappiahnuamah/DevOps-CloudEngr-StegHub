@@ -425,3 +425,123 @@ angular.module('myApp', [])
 });
 
 ```
+- In that same  `public` folder, create a file called `index.html`
+```bash
+vi index.html
+```
+- Copy and paste the codes into `index.html`
+```html
+<!DOCTYPE html>
+<html ng-app="myApp" ng-controller="myCtrl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Management</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="script.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f8f9fa;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background: #f1f1f1;
+    }
+    input[type="text"], input[type="number"] {
+      width: 95%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin: 3px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button.add {
+      background-color: #007bff;
+      color: white;
+    }
+    button.edit {
+      background-color: #28a745;
+      color: white;
+    }
+    button.delete {
+      background-color: #dc3545;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Book Management</h1>
+  <h2>{{ editing ? "Edit Book" : "Add New Book" }}</h2>
+
+  <form ng-submit="editing ? update_book() : add_book()">
+    <table>
+      <tr>
+        <td>Name:</td>
+        <td><input type="text" ng-model="Name" required></td>
+      </tr>
+      <tr>
+        <td>ISBN:</td>
+        <td><input type="text" ng-model="Isbn" required ng-disabled="editing"></td>
+      </tr>
+      <tr>
+        <td>Author:</td>
+        <td><input type="text" ng-model="Author" required></td>
+      </tr>
+      <tr>
+        <td>Pages:</td>
+        <td><input type="number" ng-model="Pages" required></td>
+      </tr>
+    </table>
+    <button type="submit" class="add">{{ editing ? "Update Book" : "Add Book" }}</button>
+    <button type="button" ng-if="editing" ng-click="cancel_edit()">Cancel</button>
+  </form>
+
+  <h2>Book List</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>ISBN</th>
+        <th>Author</th>
+        <th>Pages</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="book in books">
+        <td>{{book.name}}</td>
+        <td>{{book.isbn}}</td>
+        <td>{{book.author}}</td>
+        <td>{{book.pages}}</td>
+        <td>
+          <button class="edit" ng-click="edit_book(book)">Edit</button>
+          <button class="delete" ng-click="del_book(book)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</body>
+</html>
+
+```
