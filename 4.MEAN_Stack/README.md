@@ -604,7 +604,7 @@ Install `nodemon` and run the server with it:
 npm install --save-dev nodemon
 npx nodemon server.js
 ```
-This will restart the server automatically whenever you change your code.
+- This will restart the server automatically whenever you change your code.
 ---
 ## 3️⃣ API Requests Return 404 for Existing Routes
 
@@ -633,6 +633,6 @@ Books/
   ├── server.js
   └── package.json
 ```
-
 ---
+
 
