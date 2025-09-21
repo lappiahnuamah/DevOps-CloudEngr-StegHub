@@ -545,3 +545,94 @@ vi index.html
 </html>
 
 ```
+- Change directory to `Books`
+```bash
+cd ..
+```
+- Start teh server in the `Books` directory
+```bash
+node server.js
+```
+- This is what you should see if everything is right
+---
+![server image](../4.MEAN_Stack/images/2.PNG)
+---
+- You can also check your browser by typing this command
+```bash
+http://<your-ip-address>:3300/
+```
+- NB: Make sure the port `3300` has been added to the inbound security rules.
+---
+- This is how the website looks like
+---
+![website image](../4.MEAN_Stack/images/4.PNG)
+---
+### 📚 Troubleshooting Guide for Books API
+
+This guide covers common issues you might face when running or interacting with the Books API and how to fix them.
+##  1️⃣ Book Not Found When Updating or Deleting
+
+**Symptom:**  
+`PUT /book/:isbn` or `DELETE /book/:isbn` returns:
+
+```json
+{ "message": "Book not found" }
+```
+
+**Cause:**  
+- The `isbn` provided does not exist in the database.
+- There might be a mismatch in the data type (e.g., number vs string).
+
+**Fix:**
+- Verify the book exists with:
+
+  ```bash
+  curl http://<your-ip-address>:3300/book
+  ```
+
+- Make sure you are using the exact same `isbn` as stored in the database.
+---
+## 2️⃣ Nodemon Not Restarting Server Automatically
+
+**Symptom:**  
+Changes to code are not reflected until manually restarting server.
+
+**Fix:**  
+Install `nodemon` and run the server with it:
+
+```bash
+npm install --save-dev nodemon
+npx nodemon server.js
+```
+This will restart the server automatically whenever you change your code.
+---
+## 3️⃣ API Requests Return 404 for Existing Routes
+
+**Symptom:**  
+`GET /book` or `POST /book` returns 404 even though `routes.js` is correctly configured.
+
+**Cause:**  
+- `routes.js` file may not be required properly in `server.js`.
+- `apps` folder path might be incorrect.
+
+**Fix:**
+
+In `server.js`, ensure you have:
+
+```js
+require('./apps/routes')(app);
+```
+
+And that your folder structure is:
+
+```
+Books/
+  ├── apps/
+  │   └── routes.js
+  ├── public/
+  ├── server.js
+  └── package.json
+```
+
+---
+
