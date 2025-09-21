@@ -124,6 +124,14 @@ curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 ```bash
 sudo apt install -y nodejs
 ```
+- Check if node has been installed
+```bash
+node -v
+```
+- Check if npm has been installed
+```bash
+npm -v
+```
 ---
 ### Step 5: Install MongoDB
 - Install gnupg and curl
@@ -166,3 +174,254 @@ sudo systemctl status mongod
 ---
 ![mongodb status](../4.MEAN_Stack/images/1b.PNG)
 ---
+- Check 
+```bash
+sudo systemctl status mongod
+```
+### Step 6: Creation of Project Files and Installation of Packages
+- Create a folder called `Books`
+```bash
+mkdir Books && cd Books
+```
+- In the `Books` directory, initialize your node project 
+```bash
+npm init
+```
+- Create a file `server.js`
+```bash
+vi server.js
+```
+- Copy and paste the web server code into `server.js`
+```javascript
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const path = require('path');
+
+const app = express();
+const PORT = process.env.PORT || 3300;
+
+// MongoDB connection
+mongoose.connect('mongodb://localhost:27017/test', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+})
+.then(()=> console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
+
+app.use(express.static(path.json(_dirname, 'public')));
+app.use(bodyParser.json());
+
+require('./apps/routes')(app);
+
+app.listen(PORT, () => {
+    console.log(`Server up: http://localhost:${PORT}`);
+
+});
+
+```
+#### Installation Express and setup routes to the server
+- Install Express and Mongoose inside the `Books` directory
+```bash
+sudo npm install express mongoose
+```
+- You can check the version and verify if it has been installed
+```bash
+npm ls
+```
+---
+![check installed packages](../4.MEAN_Stack/images/1c.PNG)
+---
+- In the `Books` directory, created a folder named `apps`
+```bash
+mkdir apps && cd apps
+```
+- Inside `apps` create `routes.js`
+```bash
+vi routes.js
+```
+- Copy and paste these codes in `routes.js`
+```javascript
+const Book = require('./models/book');
+const path = require('path');
+
+module.exports = function (app) {
+  app.get('/book', async (req, res) => {
+    try {
+      const books = await Book.find();
+      res.json(books);
+    } catch (err) {
+      res.status(500).json({ message: 'Error fetching books', error: err.message });
+    }
+  });
+
+  app.post('/book', async (req, res) => {
+    try {
+      const book = new Book({
+        name: req.body.name,
+        isbn: req.body.isbn,
+        author: req.body.author,
+        pages: req.body.pages
+      });
+      const savedBook = await book.save();
+      res.status(201).json({ message: 'Successfully added book', book: savedBook });
+    } catch (err) {
+      res.status(400).json({ message: 'Error adding book', error: err.message });
+    }
+  });
+
+  app.put('/book/:isbn', async (req, res) => {
+    try {
+      const updated = await Book.findOneAndUpdate(
+        { isbn: req.params.isbn },
+        {
+          name: req.body.name,
+          author: req.body.author,
+          pages: req.body.pages
+        },
+        { new: true }
+      );
+
+      if (!updated) return res.status(404).json({ message: 'Book not found' });
+
+      res.json({ message: 'Book updated successfully', book: updated });
+    } catch (err) {
+      res.status(500).json({ message: 'Error updating book', error: err.message });
+    }
+  });
+
+  app.delete('/book/:isbn', async (req, res) => {
+    try {
+      const result = await Book.findOneAndDelete({ isbn: req.params.isbn });
+      if (!result) return res.status(404).json({ message: 'Book not found' });
+
+      res.json({ message: 'Successfully deleted the book', book: result });
+    } catch (err) {
+      res.status(500).json({ message: 'Error deleting book', error: err.message });
+    }
+  });
+
+  // Catch-all route for SPA
+  app.get('/{*path}', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  });
+};
+
+```
+- In the `apps` directory create a directory called `models`
+```bash
+mkdir models && cd models
+```
+- Create a file called `book.js` which contains our model
+```bash
+vi book.js
+```
+- Copy and paste these codes into `book.js`
+```javascript
+
+const mongoose = require('mongoose');
+
+const bookSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    isbn: { type: String, required: true, unique: true, index: true },
+    author: { type: String, required: true },
+    pages: { type: Number, required: true, min: 1 }
+}, {
+    timestamps: true
+});
+
+module.exports = mongoose.model('Book', bookSchema);
+
+```
+---
+### Step 7: Access the routes with AngularJs
+- Change directory to `Books`
+```bash
+cd ../..
+```
+- Create a directory called `public`
+```bash
+mkdir public && cd public
+```
+- Create a file called `script.js`
+```bash
+vi script.js
+```
+- Copy and paste the code into `script.js`
+```javascript
+angular.module('myApp', [])
+.controller('myCtrl', function($scope, $http) {
+  $scope.editing = false;
+
+  function fetchBooks() {
+    $http.get('/book')
+      .then(response => {
+        $scope.books = response.data;
+      })
+      .catch(error => {
+        console.error('Error fetching books:', error);
+      });
+  }
+  fetchBooks();
+
+  $scope.add_book = function() {
+    const newBook = {
+      name: $scope.Name,
+      isbn: $scope.Isbn,
+      author: $scope.Author,
+      pages: $scope.Pages
+    };
+
+    $http.post('/book', newBook)
+      .then(() => {
+        fetchBooks();
+        resetForm();
+      })
+      .catch(error => console.error('Error adding book:', error));
+  };
+
+  $scope.del_book = function(book) {
+    if (!confirm(`Delete "${book.name}"?`)) return;
+    $http.delete(`/book/${book.isbn}`)
+      .then(() => fetchBooks())
+      .catch(error => console.error('Error deleting book:', error));
+  };
+
+  $scope.edit_book = function(book) {
+    $scope.editing = true;
+    $scope.Name = book.name;
+    $scope.Isbn = book.isbn;
+    $scope.Author = book.author;
+    $scope.Pages = book.pages;
+  };
+
+  $scope.update_book = function() {
+    const updatedBook = {
+      name: $scope.Name,
+      author: $scope.Author,
+      pages: $scope.Pages
+    };
+
+    $http.put(`/book/${$scope.Isbn}`, updatedBook)
+      .then(() => {
+        fetchBooks();
+        resetForm();
+        $scope.editing = false;
+      })
+      .catch(error => console.error('Error updating book:', error));
+  };
+
+  $scope.cancel_edit = function() {
+    resetForm();
+    $scope.editing = false;
+  };
+
+  function resetForm() {
+    $scope.Name = '';
+    $scope.Isbn = '';
+    $scope.Author = '';
+    $scope.Pages = '';
+  }
+});
+
+```
