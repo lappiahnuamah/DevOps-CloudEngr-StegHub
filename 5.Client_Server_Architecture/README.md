@@ -152,7 +152,7 @@ SHOW DATABASES;
 | Connection refused    | MySQL not running               | `sudo systemctl start mysql`                     |
 
 
-## 12. Security Best Practices
+## 11. Security Best Practices
 
 - Avoid using GRANT ALL PRIVILEGES ON *.* in production.
 
@@ -162,7 +162,7 @@ SHOW DATABASES;
 
 - Consider enabling SSL for MySQL connections.
 
-## 13. Summary
+## 12. Summary
 
 You have successfully:
 
