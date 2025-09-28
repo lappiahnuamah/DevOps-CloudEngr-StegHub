@@ -82,7 +82,7 @@ SELECT user, host FROM mysql.user;
 ---
 ![Client-Server](../5.Client_Server_Architecture/images/1a.PNG)
 ---
-As you can see `law` in the list of users.
+- As you can see `law` in the list of users.
 ---
 ## 6. Allow Port 3306 in Firewall / Security Group
 
