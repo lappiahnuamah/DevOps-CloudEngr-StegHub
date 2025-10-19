@@ -14,7 +14,6 @@ This guide walks through setting up storage infrastructure on **two Linux server
 ## 2. Project Objectives
 
 - Configure storage subsystem for Web and Database servers based on Linux OS. 
-<br>
 - Install WordPress and connect it to a remote MySQL database server. 
 ---
 
@@ -53,38 +52,95 @@ NB: Create 3 volumes for the webserver and 3 volume for the MySQL server, each o
 ---
 ![attach-volume](../6.Web_Solution_with_Wordpress/images/waa.PNG)
 ---
+- Scroll down and Click on `Attach Volume`
+---
+![attach-volume](../6.Web_Solution_with_Wordpress/images/wss.PNG)
+---
 
+## 4. Begin Configuration
 
+Open the bash terminal. Use `lsblk` commmand to inspect what block devices are attached to the server you are on. NB: All devices in linux are in `/dev/` directory.
 ```bash
-sudo apt update && sudo apt upgrade -y
-sudo apt install mysql-server -y
+sudo lsblk
 ```
-Verify MySQL is running:
+---
+![attach-volume](../6.Web_Solution_with_Wordpress/images/1.PNG)
+---
+Enter `df -h` to see all mounts and free space on the server
 ```bash
-sudo systemctl status mysql
+df -h
 ```
-Enable on boot:
+---
+![attach-volume](../6.Web_Solution_with_Wordpress/images/1h.PNG)
+---
+Enter `gdisk` to create a partition on each of the 3 disks
 ```bash
-sudo systemctl enable mysql
+sudo gdisk /dev/xvdbf
 ```
-## 4. Configure MySQL for Remote Access
-
-Edit MySQL Configuration
+---
+![attach-volume](../6.Web_Solution_with_Wordpress/images/g.PNG)
+---
+![attach-volume](../6.Web_Solution_with_Wordpress/images/4.PNG)
+---
+Use `lsblk` utility to view newly configured partition on each of the 3 disks
 ```bash
-sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
-```
-Change:
+lsblk
+``` 
+---
+![attach-volume](../6.Web_Solution_with_Wordpress/images/1e.PNG)
+---
+Install `lvm2` with
 ```bash
-bind-address = 127.0.0.1
-```
-To:
+sudo yum install lvm2
+``` 
+Check partitions using `lvm2` with
 ```bash
-bind-address = 0.0.0.0
-```
-Save and restart MySQL:
+lvmdiskscan
+``` 
+Use `pvcreate` to mark each of the 3 disks as physical volumes
 ```bash
-sudo systemctl restart mysql
-```
+sudo pvcreate /dev/xvdbf1
+sudo pvcreate /dev/xvdbg1
+sudo pvcreate /dev/xvdbh1
+``` 
+Verify created `Volumes` 
+```bash
+sudo pvs
+``` 
+---
+![pvs](../6.Web_Solution_with_Wordpress/images/1a.PNG)
+---
+Now let's add all the 3 PVs to a volume group (VG). We will use the `vgcreate`. We will name our VG as `webdata-vg`. You can name the database volume group as `dbdata-vg` if you want. 
+```bash
+sudo vgcreate webdata-vg /dev/xvdbh1 /dev/xvdbg1  /dev/xvdbf1
+``` 
+Verify created `Volume Group` 
+```bash
+sudo vgs
+``` 
+---
+![vgs](../6.Web_Solution_with_Wordpress/images/1b.PNG)
+---
+Now let's create 2 logical volumes called `apps-lv` (Half of the PV size) and `logs-lv` (The other half).
+NB: `apps-lv` is used to store data for the website. and `logs-lv` is used to store data for logs. The command we can use is `lvcreate`
+```bash
+sudo lvcreate -n apps-lv -L 14G webdata-vg
+sudo lvcreate -n logs-lv -L 14G webdata-vg
+``` 
+Verify created `Logical Volumes` 
+```bash
+sudo lvs
+``` 
+---
+![lvs](../6.Web_Solution_with_Wordpress/images/1c.PNG)
+---
+Verify the entire setup
+```bash
+sudo vgdisplay -v
+``` 
+---
+![lvs](../6.Web_Solution_with_Wordpress/images/1d.PNG)
+---
 ## 5. Create Remote User
 
 Log into MySQL shell:
