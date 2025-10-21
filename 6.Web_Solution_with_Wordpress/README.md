@@ -318,61 +318,63 @@ Run on the client server:
 ```bash
 sudo apt update
 sudo apt install mysql-client -y
-
 ```
-### Test Network Connectivity
-
-Before connecting, test if the port is open:
-```bash
-nc -zv <SERVER_1_IP> 3306
-```
-Expected output:
+- HINT: Always make sure to open MySQL port 3306 on DB Server to allow connection from the wordpress. 
 ---
-![VerifyMsql](../5.Client_Server_Architecture/images/1d.PNG)
-If it fails, check firewall/security group settings.
-## 9. Connect to MySQL from Client
+![MySQL-Port](../6.Web_Solution_with_Wordpress/images/vddd.PNG)
+---
 
-Run:
+### Test Connectivity
+Install MySQL client and test that you can connect from the Wordpress to your DB :
 ```bash
-mysql -h <SERVER_1_IP> -u law -p
+sudo yum install mysql
+sudo mysql -u myuser -p -h <DB-Server-Private-IP-Address>
+```
+After successful login, list the databases with this command
+```mysql
+SHOW DATATBASES
+```
+Change permissions and configurations for your Web Server. Check MySQL Server Bind Address.
+```bash
+sudo vi /etc/my.cnf
+```
+Make sure it includes
+```ini
+bind-address = 0.0.0.0
+```
+Then restart:
+```bash
+sudo systemctl restart mysqld
+```
+Edit the config file:
+```bash
+sudo vi /var/www/html/wordpress/wp-config.php
+```
+Then update this part:
+```php
+define( 'DB_NAME', '<your-db-name>' );
+define( 'DB_USER', '<your-db-user-name>' );
+define( 'DB_PASSWORD', '<your-db-password>' );
+define( 'DB_HOST', '<Private-IP-Address-DB-Server>' );
+define( 'DB_CHARSET', 'utf8' );
+define( 'DB_COLLATE', '' );
 
 ```
-Enter your password and you should be inside the MySQL shell. Test by running:
+Save and exit (`:wq`)
+---
+Restart Apache
 ```bash
-SHOW DATABASES;
+sudo systemctl restart httpd
+```
+Now access from your browser the link to your WordPress
+```bash
+http://<Web-Server-Public-IP-Address>/wordpress/
 ```
 ---
-![VerifyMsql](../5.Client_Server_Architecture/images/3.PNG)
+![wordpres](../6.Web_Solution_with_Wordpress/images/w.PNG)
 ---
-## 10. Troubleshooting
-| Issue                 | Cause                           | Solution                                         |
-| --------------------- | ------------------------------- | ------------------------------------------------ |
-| Connection hangs      | Port blocked / SG misconfigured | Open port 3306 in firewall or AWS Security Group |
-| `Access denied` error | User host is not `%`            | Create user with `CREATE USER 'law'@'%' ...`     |
-| Can't connect         | MySQL not listening externally  | Set `bind-address = 0.0.0.0` and restart MySQL   |
-| Connection refused    | MySQL not running               | `sudo systemctl start mysql`                     |
-
-
-## 12. Security Best Practices
-
-- Avoid using GRANT ALL PRIVILEGES ON *.* in production.
-
-- Restrict remote access to only the client’s IP instead of %.
-
-- Use strong, unique passwords.
-
-- Consider enabling SSL for MySQL connections.
-
-## 13. Summary
-
-You have successfully:
-
-1. Installed MySQL server on Server 1.
-
-2. Configured it for remote connections.
-
-3. Created a remote user with privileges.
-
-4. Installed MySQL client on Server 2.
-
-5. Connected from client to server over the network.
+![wordpres](../6.Web_Solution_with_Wordpress/images/wa.PNG)
+---
+![wordpres](../6.Web_Solution_with_Wordpress/images/wad.PNG)
+---
+Stop your instances after you are done. 
