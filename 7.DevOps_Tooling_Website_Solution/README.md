@@ -59,7 +59,7 @@ NB: Create 3 volumes for the webserver and 3 volume for the MySQL server, each o
 ![attach-volume](../6.Web_Solution_with_Wordpress/images/wss.PNG)
 ---
 
-## 4. Configurations
+## 3. Configurations
 
 Open the bash terminal. Use `lsblk` commmand to inspect what block devices are attached to the server you are on. NB: All devices in linux are in `/dev/` directory.
 ```bash
@@ -143,15 +143,12 @@ sudo vgdisplay -v
 ---
 ![lvs](../6.Web_Solution_with_Wordpress/images/1d.PNG)
 ---
-Use `mkfs.ext4` to format the logical volumes with `ext4`filesystem.
+Use `mkfs` to format the logical volumes with `xfs`filesystem.
 ```bash
-sudo mkfs -t ext4 /dev/webdata-vg/apps-lv
-sudo mkfs -t ext4 /dev/webdata-vg/logs-lv
+sudo mkfs -t xfs /dev/webdata-vg/lv-apps
+sudo mkfs -t xfs /dev/webdata-vg/lv-opt
+sudo mkfs -t xfs /dev/webdata-vg/lv-opt
 ``` 
----
-![lvs](../6.Web_Solution_with_Wordpress/images/1f.PNG)
----
-![lvs](../6.Web_Solution_with_Wordpress/images/1g.PNG)
 ---
 Create `/var/www/html` directory to store website files.
 ```bash
@@ -161,132 +158,83 @@ Create `/home/recovery/logs` directory to backup of log data.
 ```bash
 sudo mkdir -p /home/recovery/logs
 ``` 
-Mount  `/var/www/html` on `apps-lv` logical volume
+- Mount  `lv-apps` on `/mnt/apps` to be used by webservers.
+- Mount  `lv-logs` on `/mnt/logs` to be used by webservers logs
+- Mount  `lv-opt` on `/mnt/opt` to be used by Jenkins Server
+
 ```bash
-sudo mount /dev/webdata-vg/apps-lv /var/www/html/
+sudo mount /dev/webdata-vg/lv-apps /mnt/apps
+sudo mount /dev/webdata-vg/lv-logs /mnt/logs
+sudo mount /dev/webdata-vg/lv-opt /mnt/opt
 ```
-Use `rsync` Utility to backup all the files in the log directory `/var/log` into `/home/recovery/logs` (This is required before mounting the file system)
-```bash
-sudo rsync -av /var/log/ /home/recovery/logs/
-``` 
-Mount `/var/log` on `logs-lv` logical volume. 
-```bash
-sudo mount /dev/webdata-vg/logs-lv /var/log
-``` 
-Restore log files back into `/var/log` directory
-```bash
-sudo rsync -av /home/recovery/logs/ /var/log
-``` 
-Update `/etc/fstab` file with the `UUID` from `blkid` so that the mount configuration will persist after restarting the server.
-
-```bash
-sudo blkid
-``` 
 ---
-![lvs](../6.Web_Solution_with_Wordpress/images/2b.PNG)
+![lvs](../7.DevOps_Tooling_Website_Solution/images/1.PNG)
 ---
-Update `/etc/fstab` with your own UUID. Remove the quotes.
-
-```bash
-sudo vi /etc/fstab
-``` 
----
-![lvs](../6.Web_Solution_with_Wordpress/images/2de.PNG)
----
-Test the configuration and reload the daemon
-
-```bash
-sudo mount -a
-sudo systemctl daemon-reload
-``` 
-Verify by running
-```bash
-df -h
-``` 
-## 5. Prepare the Database Server
-
-Launch a second RedHat EC2 instance and repeat the same steps as as you did for the wordpress server but instead of `apps-lv`. Create `db-lv` and mount it to `/db` directory instead of `/var/www/html/`. 
-
----
-## 6. Install WordPress on the Web Server 
-
-Update the repository:
+- Install `NFS server`, configure it to start on reboot and make sure it is up and running.
 ```bash
 sudo yum -y update
-```
-Install `wget`, `Apache` and it's dependencies
-```bash
-sudo yum -y install wget httpd php php-mysqlnd php-fpm php-json
-```
-Start Apache:
-```bash
-sudo systemctl enable httpd
-sudo systemctl start httpd
-sudo systemctl status httpd
-```
-Configure a Free AlmaLinux Repo on RHEL 9
-```bash
-sudo tee /etc/yum.repos.d/almalinux.repo <<'EOF'
-[baseos]
-name=AlmaLinux 9 - BaseOS
-baseurl=http://repo.almalinux.org/almalinux/9/BaseOS/x86_64/os/
-enabled=1
-gpgcheck=0
-
-[appstream]
-name=AlmaLinux 9 - AppStream
-baseurl=http://repo.almalinux.org/almalinux/9/AppStream/x86_64/os/
-enabled=1
-gpgcheck=0
-
-[extras]
-name=AlmaLinux 9 - Extras
-baseurl=http://repo.almalinux.org/almalinux/9/extras/x86_64/os/
-enabled=1
-gpgcheck=0
-EOF
-
-```
-Rebuild Cache
-```bash
-sudo dnf clean all
-sudo dnf makecache
-```
-Now install PHP
-```bash
-sudo dnf install php php-cli php-fpm php-common php-opache php-gd php-curl php-mysqlnd -y
-
+sudo yum install nfs-utils -y
+sudo systemctl start nfs-server.service
+sudo systemctl enable nfs-server.service
+sudo systemctl status nfs-server.service
 ```
 ---
+![nfs-service](../7.DevOps_Tooling_Website_Solution/images/3.PNG)
+---
+- Export the mounts for `webservers' subnet cidr` to connect as `clients`. Make sure to install all three webservers in the same subnet. 
+- To check your `subnet cidr`. Open the EC2 details in the `AWS Web console` and locate `Networking` tab and open the subnet link.
+---
+![lvs](../7.DevOps_Tooling_Website_Solution/images/rr.PNG)
+---
+![lvs](../7.DevOps_Tooling_Website_Solution/images/rr1.PNG)
+---
+![lvs](../7.DevOps_Tooling_Website_Solution/images/rr2.PNG)
+---
+- Make sure you setup permission to allow your webservers to read, write an execute files on NFS:
 ```bash
-sudo systemctl start php-fpm
-sudo systemctl enable php-fpm
-setsebool -P httpd_execmem 1
+sudo chown -R apache: /mnt/apps
+sudo chown -R nobody: /mnt/logs
+sudo chown -R nobody: /mnt/opt
+
+
+sudo chmod -R 777: /mnt/apps
+sudo chmod -R 777: /mnt/logs
+sudo chmod -R 777: /mnt/opt
+
+sudo systemctl restart nfs-server.service
 ```
-Restart Apache
+- Configure access to NFS for clients within the same subnet (`Subnet CIDR-172.31.16.0/20`)
 ```bash
-sudo systemctl restart httpd
+sudo vi /etc/exports
+
+
+/mnt/apps <Subnet-CIDR> (rw,sync,no_all_squash,no_root_squash)
+/mnt/logs <Subnet-CIDR> (rw,sync,no_all_squash,no_root_squash)
+/mnt/opt <Subnet-CIDR> (rw,sync,no_all_squash,no_root_squash)
 ```
-Download WordPress and copy wordpress to `/var/www/html`
+Press the  `Esc` key then `:wq!`
 ```bash
-mkdir wordpress && cd wordpress
-sudo wget http://wordpress.org/latest.tar.gz
-sudo tar -xzvf latest.tar.gz
-sudo rm -rf latest.tar.gz
+sudo  exports -arv
 ```
 ---
+![lvs](../7.DevOps_Tooling_Website_Solution/images/6a.PNG)
+---
+Check which port is used by `NFS` and open it using Security Groups
 ```bash
-cp wordpress/wp-config-sample.php wordpress/wp-config.php
-cp -R wordpress /var/www/html/
+rpcinfo -p | grep nfs
 ```
-Configure SELinux Policies
-```bash
-sudo chown -R apache:apache /var/www/html/wordpress
-sudo chcon -t httpd_sys_rw_content_t /var/www/html/wordpress -R 
-sudo setsebool -P httpd_can_network_connect=1
-```
-## 7. Install MySQL on your DB Server EC2
+---
+![lvs](../7.DevOps_Tooling_Website_Solution/images/6b.PNG)
+---
+- `Important note:` Take note that for NFS server to be accessile from your client, make sure these ports are open: `TCP 111, UDP 111, UDP 2049`
+---
+![lvs](../7.DevOps_Tooling_Website_Solution/images/6c.PNG)
+---
+![lvs](../7.DevOps_Tooling_Website_Solution/images/6d.PNG)
+---
+## 4. Configure the Database Server
 
+Launch a RedHat EC2 instance or a Ubuntu EC2 Server. <br></br>
 Install MySQL
 ```bash
 sudo yum update
@@ -297,86 +245,135 @@ Verify MySQL
 sudo systemctl restart mysqld
 sudo systemctl enable mysqld
 ```
-Configure DB to work with WordPress
+Create a database and name it `tooling`
 ```bash
 sudo mysqld
-CREATE DATABASE wordpress;
-CREATE USER `myuser`@`<Web-Server-Private-IP-Address>`
-IDENTIFIED BY 'mypass';
-GRANT ALL ON wordpress.* TO 'myuser'@'<Web-Server-Private-IP-Address>';
+CREATE DATABASE tooling;
+```
+Create a database user and name it`webaccess`
+```bash
+CREATE USER `webaccess`@`172.31.17.0/20` IDENTIFIED BY 'mypass123!';
+```
+Grant permission to `webaccess` user on `tooling` database from the webserver subnet cidr.
+```bash
+GRANT ALL ON tooling.* TO 'webaccess'@'172.31.17.0/20';
 FLUSH PRIVILEGES;
 SHOW DATABASES;
 exit
 ```
-Confiure WordPress to connect to Remote Database.
-```bash
-sudo yum update
-sudo yum install mysql-server
+---
+![mysql-server](../7.DevOps_Tooling_Website_Solution/images/6e.PNG)
+---
+Check users on your mysql server.
+```sql
+select User, Host FROM mysql.user;
 ```
 ---
-## 8. Install MySQL Client on Server 2
+![mysql-server](../7.DevOps_Tooling_Website_Solution/images/6f.PNG)
+---
+---
+## 5. Prepare the Web Servers
 
-Run on the client server:
-```bash
-sudo apt update
-sudo apt install mysql-client -y
-```
-- HINT: Always make sure to open MySQL port 3306 on DB Server to allow connection from the wordpress. 
----
-![MySQL-Port](../6.Web_Solution_with_Wordpress/images/vddd.PNG)
----
+- Prepare the Web Servers to serve the same content from shared storage solutions `NFS Server` and `MySQL database`. Utilize NFS and mount the created Logical Volume `lv-apps` to the folder where the Apache stores files to be served to the users `(/var/www)`.
+- Configure NFS client on all three servers.Install NFS Client with this: 
 
-### Test Connectivity
-Install MySQL client and test that you can connect from the Wordpress to your DB :
 ```bash
-sudo yum install mysql
-sudo mysql -u myuser -p -h <DB-Server-Private-IP-Address>
+sudo yum install nfs-utils nfs4-acl-tools -y
 ```
-After successful login, list the databases with this command
-```mysql
-SHOW DATATBASES
-```
-Change permissions and configurations for your Web Server. Check MySQL Server Bind Address.
+- Mount `/var/www/` and target the NFS server's exports for apps
 ```bash
-sudo vi /etc/my.cnf
+sudo mkdir /var/www
+sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/apps /var/www
 ```
-Make sure it includes
-```ini
-bind-address = 0.0.0.0
-```
-Then restart:
+- Verify that NFS was mounted successfuly by running `df -h` 
+---
+![Mount-disk](../7.DevOps_Tooling_Website_Solution/images/6gh.PNG)
+---
+- Make sure that the changes will persist on Web Server after reboot:
 ```bash
-sudo systemctl restart mysqld
+sudo vi /etc/fstab
 ```
+Add the following line
+```bash
+<NFS-Server-Private-IP-Address>:/mnt/apps /var/www nfs  defaults  0  0
+```
+### 6. Install `Remi's Repository`, Apache and PHP
+```bash
+sudo yum install httpd -y
+
+sudo dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+
+sudo dnf install dnf-utils http://rpms.remirepo.net/enterprise/remi-release-9.rpm
+
+sudo dnf module reset php
+
+sudo dnf module enable php:remi-7.4
+
+sudo dnf install php php-opcache php-gd php-curl php-cli php-mysqlnd
+
+sudo systemctl start php-fpm
+
+sudo systemctl enable php-fpm
+
+sudo setsebool -P httpd_execmem 1
+```
+- NB: Verify that `Apache` files and directories are available on the Web Server in `/var/www` and also on the NFS Server in `/mnt/apps`. If you see same files, it means that NFS is mounted correctly. 
+- Locate the log folder for Apache on the Web Server and mount it to NFS server's export for logs. Then make sure the mount point will persist after reboot.
+- If you're unsure of the location of the log files. Do this
+```bash
+sudo apachectl -V | grep SERVER_CONFIG_FILE
+```
+- Then run this:
+```bash
+sudo grep -i log /etc/httpd/conf/httpd.conf
+
+```
+- You will see directives like:
+```nginx
+ErrorLog "logs/error_log"
+CustomLog "logs/access_log" combined
+```
+- Fork the tooling source code here 👇👇👇 and clone it. 
+- **Tooling Soure code: [Tooling Website](https://github.com/StegTechHub/tooling)** 
+- Deploy the tooling website's code to the Webserver. Ensure that the `html` folder from the repository is deployed to `/var/www/html`
+- Here is what you should get when you deploy the tooling website on just one server. You should see on all three. 
+---
+![wordpres](../7.DevOps_Tooling_Website_Solution/images/6gi.PNG)
+---
+### 7. Troubleshooting skills
 Edit the config file:
 ```bash
-sudo vi /var/www/html/wordpress/wp-config.php
+sudo vi /var/www/html/functions.php
 ```
 Then update this part:
 ```php
-define( 'DB_NAME', '<your-db-name>' );
-define( 'DB_USER', '<your-db-user-name>' );
-define( 'DB_PASSWORD', '<your-db-password>' );
-define( 'DB_HOST', '<Private-IP-Address-DB-Server>' );
-define( 'DB_CHARSET', 'utf8' );
-define( 'DB_COLLATE', '' );
-
+$db = mysqli_connect('<DB-Server-Private-IP-Address>', '<DB-USER>', '<DB-password>', '<DATABASE>');
 ```
 Save and exit (`:wq`)
 ---
-Restart Apache
+Incase you don't know who to find your private IP of your DB Server. You can check if from the AWS Console. The Details Section of the DB instance or On the DB EC2 instance, run
 ```bash
-sudo systemctl restart httpd
+hostname -I
 ```
-Now access from your browser the link to your WordPress
+Make sure your MySQL server allows remote connections
+- On the DB server, edit the configuration file (for Amazon Linux/RHEL)
 ```bash
-http://<Web-Server-Public-IP-Address>/wordpress/
+sudo vi /etc/my.cnf
 ```
----
-![wordpres](../6.Web_Solution_with_Wordpress/images/w.PNG)
----
-![wordpres](../6.Web_Solution_with_Wordpress/images/wa.PNG)
----
-![wordpres](../6.Web_Solution_with_Wordpress/images/wad.PNG)
----
+or 
+```bash
+sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+```
+Find the line
+```ini
+bind-address = 127.0.0.1
+```
+and change it to 
+```ini
+bind-address = 0.0.0.0
+```
+Save and restart MySQL:
+```bash
+sudo systemctl restart mysqld
+```
 Stop your instances after you are done. 
