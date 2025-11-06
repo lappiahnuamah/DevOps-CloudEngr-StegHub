@@ -19,8 +19,9 @@ The **DevOps Tooling Website** solution consist of:
 
 
 
-## 3. Prepare a Web Server
-You can check how to launch an instance here 
+## 2. Prepare NFS Server
+- Spin up a new EC2 instance with RHEL9 Operating System.
+- Configure LVM on the Server. If you have forgotten how to setup an instance click on the link below: 👇👇
 - **Project 1: [Deploy a Complete LAMP Stack on AWS](https://github.com/lappiahnuamah/DevOps-CloudEngr-StegHub/tree/main/1.LAMP_Stack)** 
 ---
 - After create a redhat ec2 instance, create 3 volumes in the same `Availability Zone (AZ)` as your web server each of size `10 GB`
